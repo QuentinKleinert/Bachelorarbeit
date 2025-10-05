@@ -1,0 +1,23 @@
+\input{Header/Header}
+
+\begin{document}
+  \include{Deckblatt/Deckblatt}
+  \frontmatter
+  \include{Inhalt/Abstrakt}
+  \tableofcontents
+
+  \mainmatter
+  \include{Inhalt/Haupttext}
+
+  \appendix
+  % (hier ggf. Anhang-Kapitel)
+
+  % Verzeichnisse gern VOR der Selbstständigkeitserklärung:
+  \listoffigures
+  \listoftables
+
+  \bibliography{Literatur/Literatur}
+
+  \pagestyle{empty}
+  \include{Inhalt/Selbststaendigkeitserklaerung}
+\end{document}

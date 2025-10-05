@@ -1,0 +1,82 @@
+% ============ Sprache & Kodierung ============
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}     % statt latin1
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}           % Euro & Co. (bei neuen LaTeX-Installationen oft entbehrlich)
+
+% \RequirePackage[ngerman=ngerman-x-latest]{hyphsubst} % meist nicht mehr nötig
+
+% ============ Mathe ============
+\usepackage{amsmath,amsfonts}
+
+% ============ Layout ============
+\usepackage{setspace}
+\usepackage{geometry}
+
+% ============ Grafiken & Float-Handling ============
+\usepackage{graphicx}
+\usepackage{wrapfig}            % statt veraltetem floatflt
+% \usepackage{pstricks}         % -> vermeiden bei pdfLaTeX; alternativ TikZ:
+% \usepackage{tikz}
+
+% ============ Farben ============
+\usepackage[dvipsnames]{xcolor} % statt color
+% Beispiel-Farben, falls du sie in hyperref nutzt:
+\definecolor{InterneLinkfarbe}{RGB}{0,0,120}
+\definecolor{ExterneLinkfarbe}{RGB}{0,100,0}
+
+% ============ Tabellen ============
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}         
+
+% ============ Quellcode ============
+\usepackage{verbatim}
+\usepackage{moreverb}
+\usepackage{listings}
+\lstloadlanguages{Java,HTML,bash}
+\lstdefinelanguage{SPARQL}{
+  morekeywords={SELECT,ASK,CONSTRUCT,DESCRIBE,WHERE,FROM,GRAPH,OPTIONAL,FILTER,
+    LIMIT,OFFSET,ORDER,BY,GROUP,HAVING,VALUES,UNION,BIND,SERVICE,MINUS,INSERT,
+    DELETE,DATA,WITH,USING,LOAD,CLEAR,CREATE,DROP,ADD,MOVE,COPY},
+  sensitive=true,
+  morecomment=[l]{#},
+  morestring=[b]"
+}
+\lstset{
+  language=SPARQL,
+  frame=tb,
+  basicstyle=\footnotesize\ttfamily,
+  showstringspaces=false,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  xleftmargin=5pt, xrightmargin=5pt,
+  aboveskip=\bigskipamount, belowskip=\bigskipamount
+}
+
+% ============ Zitate ============
+\usepackage[autostyle=true]{csquotes}
+
+% ============ Sonstiges ============
+\usepackage{xspace}
+\usepackage{caption}
+\usepackage{scrhack}
+\usepackage{microtype}
+
+% ============ Links (nahe ans Ende) ============
+\usepackage[
+  pdftex,
+  colorlinks=true,
+  linkcolor=InterneLinkfarbe,
+  urlcolor=ExterneLinkfarbe
+]{hyperref}
+% \usepackage[all]{hypcap}  % i. d. R. nicht mehr nötig
+% \usepackage{url}          % wird von hyperref abgedeckt
+
+% ============ Glossar (nach hyperref laden) ============
+\usepackage[
+  nonumberlist,
+  acronym,
+  toc
+]{glossaries}
+
