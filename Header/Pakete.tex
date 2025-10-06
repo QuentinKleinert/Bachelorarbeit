@@ -30,6 +30,7 @@
 \usepackage{array}
 \usepackage{longtable}
 \usepackage{booktabs}         
+\usepackage{tabularx}
 
 % ============ Quellcode ============
 \usepackage{verbatim}
@@ -53,8 +54,13 @@
   showstringspaces=false,
   keywordstyle=\bfseries,
   commentstyle=\color{GrayBlue}\itshape,
-  xleftmargin=5pt, xrightmargin=5pt,
-  aboveskip=\bigskipamount, belowskip=\bigskipamount,
+  xleftmargin=\parindent,
+  xrightmargin=0pt,
+  framexleftmargin=\parindent,
+  framexrightmargin=0pt,
+  aboveskip=\bigskipamount,
+  belowskip=\bigskipamount,
+  breaklines=true,
   literate=
     {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
     {ß}{{\ss}}1 {–}{{-}}1 {—}{{-}}1 {“}{{\textquotedblleft}}1 {”}{{\textquotedblright}}1

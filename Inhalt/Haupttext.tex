@@ -174,7 +174,7 @@ bereitgestellt. Zentrale Klassen/Properties, die auch in den Beispielen unten ve
 \end{itemize}
 
 \subsection{Build‐/Publikationsprozess}
-Der Build-Schritt erfolgt skriptgestützt (\texttt{generate-combined.sh}). Die Dienste werden in \texttt{config.ttl} beschrieben: Neben getrennten Services für \emph{sachsen}, \emph{brandenburg}, \emph{kps} und \emph{vocabulary} ist ein virtueller Service \texttt{combined} definiert, der alle benannten Graphen als einen SPARQL-Endpunkt zusammenführt. Die Web-UI \texttt{pfarrerbuch-meta} (GitHub: \texttt{pcp-on-web/pfarrerbuch-meta}) fragt diesen Endpunkt und rendert die Daten in einer nutzerfreundlichen Oberfläche.
+Der Build-Schritt erfolgt skriptgestützt (\texttt{generate-combined.sh}). Die Dienste werden in \texttt{config.ttl} beschrieben: Neben getrennten Services für \emph{sachsen}, \emph{brandenburg}, \emph{kps} und \emph{vocabulary} ist ein virtueller Service \texttt{combined} definiert, der alle benannten Graphen als einen SPARQL-Endpunkt zusammenführt. Die Web-UI \texttt{pfarrerbuch-meta} (GitHub: \texttt{pcp-on-web/pfarrerbuch-meta}\footnote{Internes GitHub-Repository; der Zugriff auf \texttt{pcp-on-web/pfarrerbuch-meta} ist projektintern geregelt.}) fragt diesen Endpunkt und rendert die Daten in einer nutzerfreundlichen Oberfläche.
 
 \subsection{Datenmodell (Kurzfassung)}
 \textbf{Personen} (\texttt{pfb:Person}) tragen u.,a. \texttt{pfb:vorname} und \texttt{pfb:nachname}. \textbf{Lebensabschnitte}
@@ -838,19 +838,22 @@ Eine listenbasierte Visualisierung relevanter Klassen/Properties erleichtert NL-
 Der `MonitoringService` sammelt Latenzen (p50/p95/max) für HTTP und Fuseki-Requests. Die Daten werden via \texttt{/metrics/perf} und Prometheus-Endpoint bereitgestellt.
 
 \section{Nicht-funktionale Anforderungen}
-\begin{center}
-\begin{tabular}{p{0.22\textwidth}p{0.73\textwidth}}
-\toprule
-\textbf{Merkmal} & \textbf{Ziel / Umsetzung} \\
-\midrule
-Sicherheit \& Datenschutz & LLM nur mit Ontologie; TLS/Token-basierte Authentifizierung; deterministische Pseudonymisierung; Logs ohne Klartext-PII. \\
-Zuverlässigkeit & Atomare Execute-Schritte; konsistenter Undo-Pfad; robustes Fehlerhandling mit aussagekräftigen Codes. \\
-Benutzbarkeit & Klarer Generate-Preview-Execute-Flow; Countdown-Anzeige für Token; aussagekräftige Toasts. \\
-Wartbarkeit & Modul-orientierte Services (`services/*.py`); Konfiguration via `.env`; getrennte Router. \\
-Leistung & UI-APIs \textless{} 300\,ms (Median) im Demo-Setup; SELECT-Anfragen \textless{} 2\,s; Monitoring verfügbar. \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{table}[ht]
+  \centering
+  \caption[Nicht-funktionale Anforderungen]{Nicht-funktionale Anforderungen im Überblick}
+  \label{tab:nicht-funktionale-anforderungen}
+  \begin{tabular}{p{0.22\textwidth}p{0.73\textwidth}}
+    \toprule
+    \textbf{Merkmal} & \textbf{Ziel / Umsetzung} \\
+    \midrule
+    Sicherheit \& Datenschutz & LLM nur mit Ontologie; TLS/Token-basierte Authentifizierung; deterministische Pseudonymisierung; Logs ohne Klartext-PII. \\
+    Zuverlässigkeit & Atomare Execute-Schritte; konsistenter Undo-Pfad; robustes Fehlerhandling mit aussagekräftigen Codes. \\
+    Benutzbarkeit & Klarer Generate-Preview-Execute-Flow; Countdown-Anzeige für Token; aussagekräftige Toasts. \\
+    Wartbarkeit & Modul-orientierte Services (`services/*.py`); Konfiguration via `.env`; getrennte Router. \\
+    Leistung & UI-APIs \textless{} 300\,ms (Median) im Demo-Setup; SELECT-Anfragen \textless{} 2\,s; Monitoring verfügbar. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
 
 \section{Datenmodell und Wissensrepräsentation}
 Die Anwendung operiert auf RDF/OWL. Änderungen werden konsequent im dedizierten Graphen \texttt{<urn:nl2sparql:changes>} abgelegt, um Undo und Scoping zu vereinfachen. Ontologie-Begriffe (`voc:Pfarrer-in`, `voc:vorname`, …) stammen aus dem in Kapitel~\ref{sec:Pfarrerdatenbank} beschriebenen Vokabular.
@@ -939,7 +942,7 @@ Mit dieser Konzeption wird eine transparente, erweiterbare und DSGVO-orientierte
 \chapter{Implementierung (Praxisteil)}
 \label{sec:implementierung}
 
-Die Konzeption aus Kapitel~\ref{sec:konzeption} wird in einer modularen Full-Stack-Anwendung umgesetzt. Dieses Kapitel beschreibt die konkrete Ausgestaltung von Backend, Frontend, Infrastruktur und Qualitätssicherung. Dabei orientieren wir uns am Generate→Preview→Execute→Undo-Workflow, den Datenschutzanforderungen sowie den Monitoring- und Usability-Zielen.
+Die Konzeption aus Kapitel~\ref{sec:konzeption} wird in einer modularen Full-Stack-Anwendung umgesetzt.\footnote{Der vollständige Quellcode ist unter \url{https://github.com/QuentinKleinert/NL2SPARQL} verfügbar.} Dieses Kapitel beschreibt die konkrete Ausgestaltung von Backend, Frontend, Infrastruktur und Qualitätssicherung. Dabei orientieren wir uns am Generate→Preview→Execute→Undo-Workflow, den Datenschutzanforderungen sowie den Monitoring- und Usability-Zielen.
 
 \section{Backend-Architektur}
 
@@ -1022,17 +1025,17 @@ Alle Messungen wurden auf der lokal betriebenen Compose-Umgebung durchgeführt (
 Für die Auswertung stehen drei Artefaktgruppen zur Verfügung:
 \begin{itemize}
   \item wiederholte NL$\rightarrow$SPARQL-Läufe (\texttt{evaluation/nl\_runs/}),
-  \item End-to-End-Flows (\texttt{evaluation/run\_preview.json:1}, \texttt{evaluation/run\_execute.json:1}, \texttt{evaluation/run\_undo.json:1}) und deren Logauszüge (\texttt{evaluation/logs\_after.json:1}),
+\item End-to-End-Flows (\path{evaluation/run_preview.json:1}, \path{evaluation/run_execute.json:1}, \path{evaluation/run_undo.json:1}) und deren Logauszüge (\path{evaluation/logs_after.json:1}),
   \item Performance-Metriken inkl.\ Varianten mit/anonym ohne Pseudonymisierung (\texttt{evaluation/perf\_15min.json:1}, \texttt{evaluation/perf\_15min\_pseudo0.json:1}, \texttt{evaluation/perf\_15min\_pseudo1.json:1}).
 \end{itemize}
 
 \section{Funktionalität der SPARQL-Generierung (RQ1)}
 
-Fünf domänentypische Prompts (INSERT, DELETE, UPDATE, zwei SELECT-Varianten) wurden jeweils zehnmal über den LLM-Service ausgeführt. Tabelle~\ref{tab:nl-eval} fasst die Kennzahlen aus \texttt{evaluation/nl\_runs/prompt\_stats.json:1} zusammen.
+Fünf domänentypische Prompts (INSERT, DELETE, UPDATE, zwei SELECT-Varianten) wurden jeweils zehnmal über den LLM-Service ausgeführt. Tabelle~\ref{tab:nl-eval} fasst die Kennzahlen aus \path{evaluation/nl_runs/prompt_stats.json:1} zusammen.
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{p{0.38\textwidth}ccc p{0.26\textwidth}}
+  \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X c c c >{\raggedright\arraybackslash}X}
     \toprule
     Prompt (Kurzfassung) & Varianten & Gültig/10 & SELECT ok & Beobachtung \\
     \midrule
@@ -1042,22 +1045,22 @@ Fünf domänentypische Prompts (INSERT, DELETE, UPDATE, zwei SELECT-Varianten) w
     \enquote{Zeige Pfarrer:innen aus Gemeinde ``Musterstadt''} & 3 & 10 & 10 & SELECT-Konstruktion inkl.\ FILTER-Klausel konsistent.\\
     \enquote{Ändere Nachnamen auf ``Beispiel''} & 1 & 10 & n/a & WITH/DELETE/INSERT/WHERE wird vollständig erzeugt.\\
     \bottomrule
-  \end{tabular}
-  \caption{Mehrfachläufe der NL$\rightarrow$SPARQL-Generierung. Varianten = unterschiedliche Query-Strukturen pro Prompt.}
+  \end{tabularx}
+  \caption[NL$\rightarrow$SPARQL-Läufe]{Mehrfachläufe der NL$\rightarrow$SPARQL-Generierung. Varianten = unterschiedliche Query-Strukturen pro Prompt.}
   \label{tab:nl-eval}
 \end{table}
 
-Alle 50 Generierungen waren syntaktisch valide und ontologiekonform (\texttt{evaluation/nl\_runs/summary\_overview.json:1}). Bei SELECT-Aufgaben liefert die Mehrheit der Varianten ausführbare Queries. Die fehlgeschlagene Anfrage erzeugte einen Kommentar mit \texttt{PH\_YEAR}; der darauf folgende SELECT-Lauf ohne manuelle Ergänzung resultierte in HTTP~400 (\texttt{evaluation/nl\_runs/run\_1/select\_9.json:1}). Dies bestätigt die Konzeption, Platzhalter dem Menschen zur finalen Präzisierung zu überlassen (Kap.~\ref{sec:konzeption}).
+Alle 50 Generierungen waren syntaktisch valide und ontologiekonform (\path{evaluation/nl_runs/summary_overview.json:1}). Bei SELECT-Aufgaben liefert die Mehrheit der Varianten ausführbare Queries. Die fehlgeschlagene Anfrage erzeugte einen Kommentar mit \texttt{PH\_YEAR}; der darauf folgende SELECT-Lauf ohne manuelle Ergänzung resultierte in HTTP~400 (\path{evaluation/nl_runs/run_1/select_9.json:1}). Dies bestätigt die Konzeption, Platzhalter dem Menschen zur finalen Präzisierung zu überlassen (Kap.~\ref{sec:konzeption}).
 
-Die LLM-Ausgaben enthalten systematisch strukturierte Kommentare und TODO-Hinweise (z.\,B.\ \texttt{evaluation/nl\_runs/run\_1/gen\_1.json:1}). Sie fungieren als Soft Guardrails: Validierung und Explainability akzeptieren die Query, dennoch bleibt die Verantwortung zur Domänenpräzisierung beim Menschen.
+Die LLM-Ausgaben enthalten systematisch strukturierte Kommentare und TODO-Hinweise (z.\,B.\ \path{evaluation/nl_runs/run_1/gen_1.json:1}). Sie fungieren als Soft Guardrails: Validierung und Explainability akzeptieren die Query, dennoch bleibt die Verantwortung zur Domänenpräzisierung beim Menschen.
 
 \section{End-to-End-Flow und Undo (RQ1)}
 
-Ein instrumentierter Durchlauf zeigt, dass Preview, Execute und Undo deterministisch interagieren. Die Preview liefert Validierung und Explain (\texttt{evaluation/run\_preview.json:1}); Execute erzeugt neben dem Undo-SPARQL eine Erfolgsmeldung (\texttt{evaluation/run\_execute.json:1}); Undo meldet die Rücknahme (\texttt{evaluation/run\_undo.json:1}). Der Logauszug \texttt{evaluation/logs\_after.json:1} dokumentiert Statuswechsel \texttt{applied}$\rightarrow$\texttt{undo\_applied} mitsamt validierten Explain-Daten. Damit ist der Undo-Kanal geschlossen und nachvollziehbar, wie in F6 gefordert.
+Ein instrumentierter Durchlauf zeigt, dass Preview, Execute und Undo deterministisch interagieren. Die Preview liefert Validierung und Explain (\path{evaluation/run_preview.json:1}); Execute erzeugt neben dem Undo-SPARQL eine Erfolgsmeldung (\path{evaluation/run_execute.json:1}); Undo meldet die Rücknahme (\path{evaluation/run_undo.json:1}). Der Logauszug \path{evaluation/logs_after.json:1} dokumentiert Statuswechsel \texttt{applied}\(\rightarrow\)\texttt{undo\_applied} mitsamt validierten Explain-Daten. Damit ist der Undo-Kanal geschlossen und nachvollziehbar, wie in F6 gefordert.
 
 \section{Performance-Messungen (RQ1/RQ2)}
 
-Die in \texttt{app/backend/services/metrics.py} und \texttt{app/backend/services/monitoring.py} implementierte Messung schreibt Latenzen sowohl in JSON als auch in Prometheus-Histogramme. Der 15-Minuten-Snapshot bei aktiver NL-Generierung (\texttt{evaluation/perf\_15min.json:1}) zeigt:
+Die in \path{app/backend/services/metrics.py} und \path{app/backend/services/monitoring.py} implementierte Messung schreibt Latenzen sowohl in JSON als auch in Prometheus-Histogramme. Der 15-Minuten-Snapshot bei aktiver NL-Generierung (\texttt{evaluation/perf\_15min.json:1}) zeigt:
 
 \begin{itemize}
   \item HTTP-Endpunkte (inklusive LLM-Latenz) mit $p_{50} = 2{,}64\,\mathrm{s}$, $p_{95} = 5{,}13\,\mathrm{s}$. Die Werte spiegeln hauptsächlich die Antwortzeiten der OpenAI-API wider; Fuseki-spezifische Aufrufe liegen im zweistelligen Millisekundenbereich.
@@ -1071,7 +1074,7 @@ Ein kontrollierter Durchlauf ohne LLM (nur Preview/Execute/Undo) reduziert die H
 \section{Datenschutz und Logging (RQ2)}
 
 \subsection{Pseudonymisierung}
-Der Pseudonymizer ersetzt sowohl Literale als auch URIs deterministisch, wie der Funktionsaufruf in \texttt{app/backend/services/pseudonymizer.py:1} und der Test \texttt{app/backend/tests/test\_pseudonymizer.py:1} zeigen. Ein Beispiel:
+Der Pseudonymizer ersetzt sowohl Literale als auch URIs deterministisch, wie der Funktionsaufruf in \path{app/backend/services/pseudonymizer.py:1} und der Test \texttt{app/backend/tests/test\_pseudonymizer.py:1} zeigen. Ein Beispiel:
 \begin{quote}
 \texttt{INSERT DATA \{ <urn:p> voc:vorname "Anna" ; voc:nachname "Meyer" . \}} 
 \quad$\rightarrow$\quad
@@ -1088,7 +1091,7 @@ Die JSON-Lines-Datei dokumentiert Status, Explain, Undo und mögliche Fehler (\t
 
 Die gesammelten Ergebnisse zeigen zwei relevante Fehlerbilder:
 \begin{enumerate}
-  \item \textbf{Unersetzte Platzhalter:} Der einzige 400-Fehler im NL-Lauf entstand, weil \texttt{PH\_YEAR} nicht durch einen konkreten Wert ersetzt wurde (\texttt{evaluation/nl\_runs/run\_1/gen\_9.json:1}). Die Vorschau markiert diese Stellen, in der UI wird zusätzlich ein Hinweis angezeigt. Künftig könnte ein UI-Assistent fehlende Platzhalter erkennen und blockieren.
+  \item \textbf{Unersetzte Platzhalter:} Der einzige 400-Fehler im NL-Lauf entstand, weil \texttt{PH\_YEAR} nicht durch einen konkreten Wert ersetzt wurde (\path{evaluation/nl_runs/run_1/gen_9.json:1}). Die Vorschau markiert diese Stellen, in der UI wird zusätzlich ein Hinweis angezeigt. Künftig könnte ein UI-Assistent fehlende Platzhalter erkennen und blockieren.
   \item \textbf{Undo-Versuche auf fremde Graphen:} Die Logdatei enthält einen \texttt{undo\_failed}-Eintrag, ausgelöst durch einen Versuch, einen Eintrag außerhalb des Changes-Graphen zurückzunehmen (\texttt{app/backend/logs/changes.jsonl:1}). Die Fehlermeldung hilft beim manuellen Debugging; perspektivisch könnte die UI blockierende Checks einbauen.
 \end{enumerate}
 
@@ -1121,6 +1124,7 @@ Damit bestätigt die Evaluation die Tragfähigkeit der Architektur, deckt aber a
 \label{sec:fazit}
 
 Diese Arbeit hat gezeigt, wie sich natürlichsprachliche Änderungswünsche auf einer domänenspezifischen RDF-Wissensbasis in kontrollierbare SPARQL-Updates überführen lassen. Kern des Ansatzes ist das Zusammenspiel aus Ontologie-gestützter LLM-Generierung, zweistufigem Preview/Execute-Fluss, revisionssicherem Logging und DSGVO-orientierter Pseudonymisierung. Die Evaluation (Kapitel~\ref{sec:evaluation}) bestätigt, dass das generierte SPARQL syntaktisch valide und ontologiekonform ist, Undo zuverlässig funktioniert und die Datenschutzmaßnahmen ohne Performanceeinbußen greifen. Gleichzeitig verdeutlichen die Beobachtungen, dass Platzhalter und offene TODO-Kommentare weiterhin menschliche Expertise erfordern – genau der Punkt, an dem sich Safety-by-Design und Mensch-in-der-Schleife treffen.
+Zur Reproduzierbarkeit steht die Referenzimplementierung samt Infrastruktur-Setup öffentlich unter \url{https://github.com/QuentinKleinert/NL2SPARQL} bereit.
 
 \section{Zusammenfassung der Ergebnisse}
 \begin{itemize}
