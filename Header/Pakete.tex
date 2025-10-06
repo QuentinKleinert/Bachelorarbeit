@@ -24,6 +24,7 @@
 % Beispiel-Farben, falls du sie in hyperref nutzt:
 \definecolor{InterneLinkfarbe}{RGB}{0,0,120}
 \definecolor{ExterneLinkfarbe}{RGB}{0,100,0}
+\definecolor{GrayBlue}{RGB}{90,105,125}
 
 % ============ Tabellen ============
 \usepackage{array}
@@ -33,6 +34,7 @@
 % ============ Quellcode ============
 \usepackage{verbatim}
 \usepackage{moreverb}
+\usepackage{listingsutf8}
 \usepackage{listings}
 \lstloadlanguages{Java,HTML,bash}
 \lstdefinelanguage{SPARQL}{
@@ -40,22 +42,35 @@
     LIMIT,OFFSET,ORDER,BY,GROUP,HAVING,VALUES,UNION,BIND,SERVICE,MINUS,INSERT,
     DELETE,DATA,WITH,USING,LOAD,CLEAR,CREATE,DROP,ADD,MOVE,COPY},
   sensitive=true,
-  morecomment=[l]{#},
+  morecomment=[l]{\#},
   morestring=[b]"
 }
 \lstset{
   language=SPARQL,
+  inputencoding=utf8,
   frame=tb,
   basicstyle=\footnotesize\ttfamily,
   showstringspaces=false,
   keywordstyle=\bfseries,
-  commentstyle=\itshape,
+  commentstyle=\color{GrayBlue}\itshape,
   xleftmargin=5pt, xrightmargin=5pt,
-  aboveskip=\bigskipamount, belowskip=\bigskipamount
+  aboveskip=\bigskipamount, belowskip=\bigskipamount,
+  literate=
+    {ä}{{\"a}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+    {ß}{{\ss}}1 {–}{{-}}1 {—}{{-}}1 {“}{{\textquotedblleft}}1 {”}{{\textquotedblright}}1
+    {„}{{\glqq}}1 {‚}{{\glq}}1 {…}{{\ldots}}1
+}
+
+\lstdefinelanguage{turtle}{
+  morekeywords={@prefix,@base,a},
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]""
 }
 
 % ============ Zitate ============
 \usepackage[autostyle=true]{csquotes}
+\usepackage[numbers,sort&compress]{natbib}
 
 % ============ Sonstiges ============
 \usepackage{xspace}
@@ -79,4 +94,3 @@
   acronym,
   toc
 ]{glossaries}
-
