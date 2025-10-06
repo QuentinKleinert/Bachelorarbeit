@@ -1,3 +1,10 @@
 
 \chapter*{Abstrakt}
 \label{sec:Abstrakt}
+\begin{abstract}
+Wissensgraphen auf Basis von RDF und SPARQL sind für Fachanwender:innen wertvolle, aber aufgrund ihrer deklarativen Syntax schwer zugängliche Werkzeuge. Diese Arbeit stellt \emph{NL2SPARQL} vor – eine Plattform, die natürlichsprachliche Änderungswünsche in valide SPARQL-Updates für die Pfarrerdatenbank überführt und dabei DSGVO-konforme Guardrails bereitstellt. Zentrale Prinzipien sind (1) LLM-gestützte Generierung im Ontologie-Kontext ohne Offenlegung von Instanzdaten, (2) ein zweistufiger Preview/Execute-Flow mit Explainability und Undo, (3) deterministische Pseudonymisierung aller Logs sowie (4) Monitoring über HTTP- und Fuseki-Latenzen. 
+
+Die Theorie bündelt Grundlagen zu RDF/OWL/SPARQL, Prompt-Programmierung, Query-Validierung und Datenschutz. Die Implementierung kombiniert FastAPI, Apache Jena Fuseki und ein React-Frontend. Ein Validator prüft Klassen und Properties gegen die Ontologie, Explainability fasst Updates zusammen, und ein Pseudonymizer ersetzt sensible Literale stabil durch Tokens. Die Evaluation umfasst 50 NL$\rightarrow$SPARQL-Läufe, instrumentierte End-to-End-Tests und Performance-Messungen. Ergebnisse: (i) alle generierten Queries sind syntaktisch valide und ontologie-konform, (ii) Undo funktioniert deterministisch, (iii) Pseudonymisierung verursacht keinen messbaren Overhead, (iv) der UI-Flow wurde in einem formativen Walkthrough positiv bewertet.
+
+NL2SPARQL demonstriert, dass sich natürliche Sprache und SPARQL-Änderungen unter Beachtung von Datenschutz und Nachvollziehbarkeit produktionsnah verschränken lassen. Der Ausblick skizziert Erweiterungen in Richtung Platzhalter-Assistenz, Mehrsprachigkeit, differenzieller Privatsphäre und Übertragung auf weitere Ontologien.
+\end{abstract}
