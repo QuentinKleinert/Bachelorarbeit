@@ -1043,7 +1043,7 @@ Fünf domänentypische Prompts (INSERT, DELETE, UPDATE, zwei SELECT-Varianten) w
     \enquote{Lösche Wohnort von \texttt{<urn:example:person:1>}} & 1 & 10 & n/a & DELETE DATA wird deterministisch erzeugt.\\
     \enquote{Zeige 10 Pfarrer:innen} & 9 & 10 & 9 & Eine Variante scheiterte (HTTP\,400), weil der Platzhalter \texttt{PH\_YEAR} nicht ersetzt wurde.\\
     \enquote{Zeige Pfarrer:innen aus Gemeinde ``Musterstadt''} & 3 & 10 & 10 & SELECT-Konstruktion inkl.\ FILTER-Klausel konsistent.\\
-    \enquote{Ändere Nachnamen auf ``Beispiel''} & 1 & 10 & n/a & WITH/DELETE/INSERT/WHERE wird vollständig erzeugt.\\
+    \enquote{Ändere Nachnamen auf ``Beispiel''} & 1 & 10 & n/a & WITH/\allowbreak DELETE/\allowbreak INSERT/\allowbreak WHERE wird vollständig erzeugt.\\
     \bottomrule
   \end{tabularx}
   \caption[NL$\rightarrow$SPARQL-Läufe]{Mehrfachläufe der NL$\rightarrow$SPARQL-Generierung. Varianten = unterschiedliche Query-Strukturen pro Prompt.}
