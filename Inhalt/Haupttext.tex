@@ -1,4 +1,5 @@
 
+
 \chapter{Einleitung}\label{sec:Einleitung}
 
 Das \emph{Semantic Web} erweitert das heutige Web um explizite Bedeutung: Inhalte werden so strukturiert, dass nicht nur Menschen, sondern auch Programme die Semantik verarbeiten und komplexe Aufgaben automatisiert unterstützen können \cite{bernersLee2001}. Dazu werden Informationen maschinenlesbar beschrieben (u.\,a.\ via URIs/IRIs und RDF-Tripeln), sodass Software-Agenten Datenquellen verbinden, Schlussfolgerungen ziehen und Dienste orchestrieren können—ohne zentrale Steuerung und im Sinne eines dezentralen, evolvierenden Webs \cite{bernersLee2001}.
@@ -12,21 +13,22 @@ Für reale, domänenspezifische Wissensgraphen (z.\,B.\ historische Personen, Or
 \paragraph{Ziel der Arbeit.}
 Diese Arbeit konzipiert, implementiert und evaluiert eine Schnittstelle, die \emph{natürliche Sprache} in \emph{valide SPARQL-Änderungsoperationen} überführt und Datenschutz sowie Nachvollziehbarkeit durchgängig verankert. Kernideen sind:
 \begin{enumerate}
-  \item LLM-gestützte Generierung mit \emph{Ontologie-Kontext} (Klassen/Properties) statt vollständiger Instanzdaten,
-  \item \emph{Vorschau} und \emph{Erklärung} der betroffenen Tripel,
-  \item \emph{schrittweise Bestätigung} und \emph{Undo},
-  \item \emph{Protokollierung} mit Pseudonymisierung und klaren Lösch-/Aufbewahrungsregeln.
+\item LLM-gestützte Generierung mit \emph{Ontologie-Kontext} (Klassen/Properties) statt vollständiger Instanzdaten,
+\item \emph{Vorschau} und \emph{Erklärung} der betroffenen Tripel,
+\item \emph{schrittweise Bestätigung} und \emph{Undo},
+\item \emph{Protokollierung} mit Pseudonymisierung und klaren Lösch-/Aufbewahrungsregeln.
 \end{enumerate}
 
 \paragraph{Forschungsfragen.}
 \begin{description}
-  \item[RQ1:] Mit welcher Genauigkeit lassen sich natürliche \emph{Änderungsanweisungen} in \emph{syntaktisch valide} und \emph{semantisch korrekte} SPARQL-Operationen (INSERT/DELETE/UPDATE) überführen?
-  \item[RQ2:] Wie wirken \emph{Privacy-by-Design}-Maßnahmen (Ontologie-Kontext, Pseudonymisierung von Logs) auf Datenschutz, Nachvollziehbarkeit und Nutzbarkeit?
-  \item[RQ3:] Wie beurteilen Nutzer:innen die \emph{Benutzbarkeit} (Verständlichkeit von Vorschau/Erklärungen/Undo) im Vergleich zu handgeschriebenen Queries; welcher Overhead entsteht?
+\item[RQ1:] Mit welcher Genauigkeit lassen sich natürliche \emph{Änderungsanweisungen} in \emph{syntaktisch valide} und \emph{semantisch korrekte} SPARQL-Operationen (INSERT/DELETE/UPDATE) überführen?
+\item[RQ2:] Wie wirken \emph{Privacy-by-Design}-Maßnahmen (Ontologie-Kontext, Pseudonymisierung von Logs) auf Datenschutz, Nachvollziehbarkeit und Nutzbarkeit?
+\item[RQ3:] Wie beurteilen Nutzer:innen die \emph{Benutzbarkeit} (Verständlichkeit von Vorschau/Erklärungen/Undo) im Vergleich zu handgeschriebenen Queries; welcher Overhead entsteht?
 \end{description}
 
 \paragraph{Beitrag und Aufbau.}
 Die Arbeit liefert (i) eine \emph{Anforderungsanalyse} für NL{\textrightarrow}SPARQL-Änderungen unter DSGVO-Vorgaben, (ii) eine \emph{Architektur} mit Komponenten für Prompting/Parser, Generator, Validator, Executor, Logger und Visualizer, (iii) eine \emph{Referenzimplementierung} (Frontend/Backend, SPARQL-Endpoint) und (iv) eine \emph{Evaluation} auf einer domänennahen Wissensbasis. Kapitel~\ref{sec:theorie} fasst Grundlagen (RDF/OWL/SPARQL, LLMs, Datenschutz) zusammen; Kapitel~\ref{sec:related-work} diskutiert verwandte Arbeiten; Kapitel~\ref{sec:konzeption} beschreibt Anforderungsanalyse \& Konzeption; Kapitel~\ref{sec:implementierung} die Implementierung; Kapitel~\ref{sec:evaluation} die Evaluation; Kapitel~\ref{sec:fazit} schließt mit Fazit und Ausblick.
+
 
 
 
@@ -44,9 +46,10 @@ Das World Wide Web ist allgegenwärtig und wächst stetig; seine Stärken -- hoh
 
 Die Idee des \emph{Semantic Web} (SW) ist, Informationen \emph{von vornherein} so zu repräsentieren, dass sie von Maschinen verarbeitet, zusammengeführt und logisch erschlossen werden können -- interoperabel durch offene Standards wie RDF, RDFS, OWL und SPARQL \cite{Hitzler,AntoniouVanHarmelen}. Leitgedanke: \emph{Informationen so repräsentieren, dass Maschinen damit in menschlich nützlicher Weise umgehen können} \cite{Hitzler}.
 
+
 \subsection{Globale Bezeichner: URIs/IRIs und Blank Nodes}
 
-Interoperabilität setzt globale Identifizierbarkeit voraus. Dafür dienen URIs bzw. deren Internationalisierung IRIs, die Ressourcen und Eigenschaften eindeutig benennen; Fragmente (\#...) verweisen auf lokalisierte Begriffe innerhalb eines Namensraums. IRIs können in RDF an Subjekt-, Prädikat- und Objektposition auftreten; als Objekt sind alternativ Literale zulässig. \emph{Blank Nodes} modellieren namenlose Hilfsknoten (nur Subjekt/Objekt) und sind nützlich für strukturierende Konstrukte, erschweren jedoch Identitätsabgleich und Abfragen über Datenquellen hinweg \cite{RDF11Primer,Hitzler}.
+Interoperabilität setzt globale Identifizierbarkeit voraus. Dafür dienen URIs bzw. deren Internationalisierung IRIs, die Ressourcen und Eigenschaften eindeutig benennen; IRIs können in RDF an Subjekt-, Prädikat- und Objektposition auftreten; als Objekt sind alternativ Literale zulässig. Literale modellieren Basiswerte (mit Datentyp und optionalem Sprach-Tag). \emph{Blank Nodes} modellieren namenlose Hilfsknoten (nur Subjekt/Objekt) und sind nützlich für strukturierende Konstrukte, erschweren jedoch Identitätsabgleich und Abfragen über Datenquellen hinweg \cite{RDF11Primer,Hitzler}.
 
 \subsection{RDF -- Datenmodell und Serialisierungen}
 \label{subsec:rdf}
@@ -123,23 +126,25 @@ ORDER BY ?titel
 \paragraph{Formale Sicht und Komplexität.}
 Die Auswertung basiert auf Graph-Homomorphismen mit \emph{Bag}- und \emph{Set}-Semantik; Sprachkonstrukte wie \texttt{OPTIONAL}, \texttt{UNION} und Filter führen zu nichttrivialen Komplexitätsklassen -- relevant für Optimierung und Systemdesign \cite{perezGutierrezSparql}.
 
-\subsection{Validierung: SHACL (Kernideen)}
+\paragraph{SPARQL-Endpunkte (Definition und Nutzung).}
+Ein \emph{SPARQL-Endpunkt} ist ein HTTP-basiertes Web-API, das SPARQL-Anfragen (READ: \texttt{SELECT}/\texttt{ASK}/\texttt{CONSTRUCT}/\texttt{DESCRIBE}) und oft auch Updates (\texttt{INSERT}/\texttt{DELETE}) entgegennimmt und ausführt. Clients senden Queries typischerweise via \texttt{GET} (URL-kodiert) oder \texttt{POST} (Body), Antworten werden als SPARQL-Results (JSON/XML) bzw.\ als RDF-Serialisierung geliefert; Timeouts, Limits und Zugriffskontrolle sind üblich. Ein Endpunkt exponiert damit ein RDF-\emph{Dataset} (Default- und benannte Graphen) über das Web und folgt dem SPARQL-1.1-Protokoll/Service-Description-Modell \cite{SPARQL11Overview}. Ein minimalistisches Beispielaufrufmuster ist:
+\begin{lstlisting}[language=bash]
+curl -G 'https://example.org/sparql' \
+  --data-urlencode 'query=SELECT * WHERE { ?s ?p ?o } LIMIT 10'
+\end{lstlisting}
 
-Integration heterogener Quellen erfordert \emph{Qualitätssicherung} neben Inferenz. \emph{SHACL} beschreibt \emph{Shapes} (Knoten- und Property-Shapes) mit Constraints (z.\,B.\ \texttt{sh:minCount}, \texttt{sh:datatype}, \texttt{sh:class}, \texttt{sh:pattern}), gegen die Datengraphen validiert werden. Das Ergebnis ist ein Validierungsbericht mit Fokusknoten, Pfad, Ursache und Schweregrad. SHACL erlaubt SPARQL-basierte Erweiterungen und kann Inferenzregime berücksichtigen \cite{SHACL12}.
+\subsection{Validierung: SHACL (Teaser)}
 
-\paragraph{Intuition.} Eine \texttt{ex:PersonShape} fordert z.\,B.\ \emph{genau einen} Wert für \texttt{ex:ssn} vom Datentyp \texttt{xsd:string} und schließt andere Eigenschaften aus (``closed shapes''); Verstöße werden explizit ausgewiesen \cite{SHACL12}.
+\emph{SHACL} beschreibt \emph{Shapes} mit Constraints (z.\,B.\ \texttt{sh:minCount}, \texttt{sh:datatype}, \texttt{sh:class}, \texttt{sh:pattern}), gegen die Datengraphen validiert werden; das Ergebnis ist ein Validierungsbericht mit Fokusknoten, Pfad, Ursache und Schweregrad \cite{SHACL12}. In dieser Arbeit dient SHACL als Baustein für frühzeitige Qualitätskontrollen und Policy-Checks; Details folgen im Validierungs-Kapitel.
 
-\subsection{Wissensgraphen und Nutzen}
 
-\emph{Wissensgraphen} modellieren Entitäten und ihre (potenziell vielfältigen) Relationen als Graph; gegenüber streng relationalen Schemata bieten sie prägnante Modellierung komplexer Beziehungen, Schema-Weiterentwicklung (\emph{schema-on-read/-later}), leichtere Integration neuer Quellen sowie Navigationsabfragen (Pfadoperatoren). Ontologien und Regeln definieren und begründen die Semantik \cite{hogan2021}. Eine praktikable Arbeitsdefinition lautet: \emph{ein Daten-Graph, der Wissen über die reale Welt kumuliert und transportiert; Knoten repräsentieren Entitäten, Kanten Relationen} \cite{hogan2021}. RDF/SPARQL bilden hierfür den Standard-Stack; alternative Graphmodelle (Property Graphs) existieren, sind jedoch nicht W3C-standardisiert.
+\subsection{Datenschutz (Brücke)}
 
-\subsection{Datenschutz-Hinweis}
-
-Sofern personenbezogene Daten betroffen sind, sind die Vorgaben der EU-DSGVO (2016/679) und von Art.~8 EU-GRCh einzuhalten. Semantic-Web-Vokabulare (z.\,B.\ \emph{Data Privacy Vocabulary}) können Konzepte wie Zweck, Rechtsgrundlage oder Einwilligung semantisch auszeichnen und damit \emph{Privacy-by-Design} unterstützen; detaillierte Betrachtungen erfolgen im Datenschutzkapitel \cite{euGDPR2016}.
+Sobald personenbezogene Daten betroffen sind, gelten die EU-DSGVO-Vorgaben (z.\,B.\ Datenminimierung, Zweckbindung, Integrität/Vertraulichkeit, Rechenschaftspflicht) \cite{euGDPR2016}. Wir adressieren dies später durch Privacy-by-Design-Maßnahmen (Ontologie-only-Prompting, Pseudonymisierung, restriktive Logs) und eine entsprechende Ausführungs-/Governance-Pipeline.
 
 \subsection*{Zwischenfazit}
 
-RDF liefert das neutrale Graph-Datenmodell; RDFS und OWL~2 fügen Semantik und Inferenz hinzu. SPARQL~1.1 bietet deklarative Abfragen und Navigation; SHACL ergänzt Validierung. In Summe entsteht ein Standard-Stack, der Interoperabilität, Ableitung und Integration für Wissensgraphen ermöglicht \cite{Hitzler,RDF11Primer,RDFS11,OWL2Overview,SPARQL11Overview,hogan2021}.
+RDF liefert das neutrale Graph-Datenmodell; RDFS und OWL~2 fügen Semantik und Inferenz hinzu. SPARQL~1.1 bietet Abfrage- und Änderungsmechanismen; SHACL ergänzt Validierung. Dieses Fundament ermöglicht es, natürlichsprachliche Anweisungen in \emph{valide} SPARQL-Operationen zu überführen und sie unter Berücksichtigung von Qualität und Datenschutz kontrolliert auszuführen \cite{Hitzler,RDF11Primer,RDFS11,OWL2Overview,SPARQL11Overview,hogan2021,perezGutierrezSparql,SHACL12}.
 
 
 
@@ -270,193 +275,77 @@ Die Pfarrerdatenbank stellt einen integrierten RDF-Wissensgraph über mehrere Re
 \label{sec:llm}
 
 \subsection{Einordnung und Motivation}
-Große Sprachmodelle (Large Language Models, LLMs) sind neuronale Netze, die auf umfangreichen Textkorpora mit einem Sprachmodellierungsziel vortrainiert werden und anschließend durch Prompting, ggf.\ Feintuning und Ausrichtungstechniken (z.\,B.\ RLHF) eine breite Palette von Sprachaufgaben bearbeiten.\footnote{Ein einführender Überblick findet sich u.\,a.\ in \cite{campesatoLLMIntro}.} 
-Zentrale Triebfeder ihrer Leistungsfähigkeit ist die \emph{Transformer}-Architektur \cite{vaswani2017attention} in Kombination mit (i) Skalierung der Modell-, Daten- und Rechenbudgets, (ii) effektiven Prompting-Methoden zur Nutzung von In-Context-Lernen \cite{brown2020language,wei2022chain}, (iii) \emph{Tool\-Use} durch externe Aktionen \cite{yao2023react} sowie (iv) Ausrichtung an menschlicher Intention mittels \emph{Instruction Tuning} und \emph{RLHF} \cite{ouyang2022training}. 
-Dieses Kapitel führt die notwendigen Grundlagen zusammen und stellt Verbindungen zu Sicherheit, Datenschutz und Retrieval-Erweiterungen her \cite{abadi2016deep,carlini2021extracting,lewis2020rag}. 
+Große Sprachmodelle (Large Language Models, LLMs) sind neuronale Netze, die auf umfangreichen Textkorpora mit einem Sprachmodellierungsziel vortrainiert werden und anschließend via Prompting, ggf.\ Feintuning und Ausrichtung (z.\,B.\ RLHF) eine breite Palette von Sprachaufgaben bearbeiten.\footnote{Ein einführender Überblick findet sich u.\,a.\ in \cite{campesatoLLMIntro}.} 
+Zentraler Treiber ist die \emph{Transformer}-Architektur \cite{vaswani2017attention} kombiniert mit (i) Skalierung, (ii) In-Context-Lernen \cite{brown2020language,wei2022chain}, (iii) \emph{Tool-Use} \cite{yao2023react} und (iv) Instruction Tuning/RLHF \cite{ouyang2022training}. Dieses Kapitel bündelt die Grundlagen und verknüpft sie mit Sicherheit, Datenschutz und Retrieval \cite{abadi2016deep,carlini2021extracting,lewis2020rag}.
 
-\paragraph{Ziele des Kapitels.}
-Wir geben (1) eine architektonische und algorithmische Basis, (2) ein konsolidiertes Bild der Kernparadigmen (In-Context-Lernen, CoT, ReAct, RLHF), (3) einen Überblick über Daten-/Decoding-Fragen (Degeneration, Halluzination), (4) Bausteine für wissensintensive Aufgaben (RAG, KG-QA via LC-QuAD~2.0 \cite{dubey2019lcquad2}) und (5) Implikationen für Sicherheit und Datenschutz (Differential Privacy; Extraktionsangriffe). 
-
-\subsection{Transformer‐Grundlagen}
-\subsubsection{Aufmerksamkeitsmechanismus}
-Der Transformer \cite{vaswani2017attention} ersetzt rekurrente/konvolutionale Netze durch \emph{Self-Attention}. Für Token-Repräsentationen $X \in \mathbb{R}^{n \times d}$ werden \emph{Queries}, \emph{Keys}, \emph{Values} berechnet: $Q=XW_Q$, $K=XW_K$, $V=XW_V$. Die Aufmerksamkeitsausgabe lautet
+\subsection{Transformer‐Grundlagen (kurz)}
+Der Transformer ersetzt rekurrente/konvolutionale Netze durch \emph{Self-Attention}. Für Token-Repräsentationen $X$ werden \emph{Queries}, \emph{Keys}, \emph{Values} berechnet, und
 \[
-\mathrm{Attention}(Q,K,V)= \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) V.
+\mathrm{Attention}(Q,K,V)= \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) V
 \]
-\emph{Multi-Head Attention} projiziert in $h$ Untermengen, um verschiedene Beziehungsarten parallel zu modellieren. Positionsinformationen werden über (sinusoidale oder gelernte) \emph{Positional Encodings} injiziert. 
-
-\subsubsection{Encoder–Decoder vs.\ Decoder-only}
-Encoder–Decoder-Modelle (z.\,B.\ T5) eignen sich für Seq2Seq-Aufgaben; \emph{Decoder-only} (GPT-Familie) modellieren $p(x_t\mid x_{<t})$ und sind für generatives Prompting weit verbreitet \cite{brown2020language}. Die Rechenkomplexität der dichten Attention ist $\mathcal{O}(n^2)$; Varianten mit lokaler/sparscher Attention reduzieren dies in langen Kontexten.
-
-\subsubsection{Vortraining: Ziel, Tokenisierung, Daten}
-Standard ist \emph{Causal Language Modeling} (CLM) mit Byte-Pair/Unigram-Tokenisierung. Große Webkorpora (Common Crawl, WebText, Bücher, Wikipedia) werden gefiltert und \emph{dedupliziert}, um Qualität zu erhöhen und Leaks in Val/Test zu mindern \cite{brown2020language}. 
+aggregiert kontextabhängig \cite{vaswani2017attention}. \emph{Multi-Head}-Attention modelliert verschiedene Relationen parallel; Positionsinformationen kommen über (gelernte) Encodings. Decoder-only-Modelle (GPT) modellieren $p(x_t\!\mid\!x_{<t})$ und sind Standard für generatives Prompting \cite{brown2020language}. Vortraining nutzt typischerweise \emph{Causal LM} auf großen, gefilterten Webkorpora.
 
 \subsection{Dekodierung und Textqualität}
-\subsection{Greedy vs.\ stochastische Verfahren}
-Greedy/Beam erzeugen oft wiederholungsreiche, „zu wahrscheinliche“ Texte. Stochastische Verfahren wie \emph{Top-$k$} und \emph{Nucleus Sampling} ($p$-Sampling) verbessern Varianz. 
-
-\subsubsection{Neural Text Degeneration}
-Holtzman et al.\ zeigen, dass die Maximierung der sequenziellen Likelihood zu \emph{Degeneration} (Wiederholungen, Langeweile) führen kann und plädieren für kalibriertes Sampling (\emph{nucleus}) \cite{holtzman2020curious}. Für Qualitätskontrolle sind Wiederholungs-Penalities und Länge/Stopkriterien wichtig. 
+Greedy/Beam erzeugen oft wiederholungsreiche, „zu wahrscheinliche“ Texte; stochastische Verfahren wie \emph{Top-$k$}/\emph{Nucleus Sampling} erhöhen Varianz. Holtzman et\,al.\ zeigen \emph{Neural Text Degeneration} und empfehlen kalibriertes Sampling (\emph{nucleus}) sowie klare Stopkriterien \cite{holtzman2020curious}.
 
 \subsection{Skalierung und In-Context-Lernen}
-\subsubsection{GPT-3 als Katalysator}
-Brown et~al.\ \cite{brown2020language} trainieren GPT-3 (175B) und evaluieren \emph{Zero/One/Few-Shot} ausschließlich per Prompting ohne Gradientenupdates \cite{brown2020language}. Kernergebnis: Leistungszuwachs mit Modellgröße und Zahl der In-Context-Beispiele; starke Ergebnisse u.\,a.\ in Übersetzung/QA, aber Schwächen bei ANLI/RACE und „Commonsense-Physik“. Die Arbeit diskutiert \emph{Datenkontamination} und evaluiert deren Einfluss. 
+GPT-3 \cite{brown2020language} demonstriert starke Zero-/Few-Shot-Leistung rein per Prompting; Zugewinne steigen mit Modellgröße und Zahl der Demonstrationen. Nützliche Muster: Instruktions-Prompting, wenige prägnante Beispiele, explizite Formatvorgaben \cite{brown2020language,wei2022chain}.
 
-\subsubsection{Prompting-Muster}
-In der Praxis haben sich etablierte Muster bewährt:
-\begin{itemize}
-  \item \textbf{Instruktions-Prompting}: präzise Aufgabenformulierung, Formatvorgaben.
-  \item \textbf{Few-Shot-Beispiele}: 3–10 prägnante Demonstrationen im Ziel-Format.
-  \item \textbf{Rollen/Constraints}: Stil, Länge, Verweise, „Gedanken erst, dann Antwort“.
-\end{itemize}
-\noindent Beispiel (schematisch):
-\begin{verbatim}
-Aufgabe: Beantworte Fragen kurz mit Quelle.
-Beispiel 1:
-  Frage: ...
-  Antwort: ... [Quelle: ...]
-...
-Neue Frage: ...
-\end{verbatim}
+\subsection{CoT und ReAct}
+\emph{Chain-of-Thought} (CoT) ergänzt Beispiele um Zwischenschritte und verbessert mehrschrittiges Denken; Gewinne sind v.\,a.\ bei größeren Modellen ausgeprägt \cite{wei2022chain}. \emph{ReAct} verknüpft Denken und Handeln (Search/Lookup), reduziert Halluzinationen und erhöht Nachvollziehbarkeit \cite{yao2023react}. Beide sind relevant, wenn natürlichsprachliche Anweisungen in SPARQL-Strukturen zu überführen sind.
 
-\subsection{Kettenbasiertes Denken (Chain-of-Thought, CoT)}
-CoT ergänzt Beispiele um \emph{Zwischenschritte} (Rationale) und kann mehrschrittiges Denken „freischalten“ \cite{wei2022chain}. 
-Wichtige Beobachtungen: (i) Gewinne steigen mit Modellgröße (\emph{emergent}), (ii) \emph{Self-Consistency} (mehrere Stichproben, Mehrheitsentscheid) erhöht Robustheit, (iii) rein „mehr Token“ erklärt die Effekte nicht — die sprachliche Zerlegung ist der Hebel.
+\subsection{Instruction Tuning und RLHF (kurz)}
+Instruction Tuning (SFT), Präferenzlernen und RL (PPO mit KL-Regularisierung) führen zu von Menschen bevorzugten Antworten; teils übertreffen kleinere, ausgerichtete Modelle große, nicht-ausgerichtete Baselines \cite{ouyang2022training}. Bias/Halluzination bleiben offene Punkte.
 
-\paragraph{Beispiel-Schablone.}
-\begin{verbatim}
-Frage: ...
-Gedanken: Schritt 1: ...; Schritt 2: ...; ...
-Antwort: ...
-\end{verbatim}
+\subsection{Wissensintensive Aufgaben: RAG \& KG-QA}
+\emph{Retrieval-Augmented Generation} trennt parametrisierte Weltkenntnis (LM) und nicht-parametrisches Wissen (Index) \cite{lewis2020rag}. Pipeline: Query $\rightarrow$ Retriever (BM25/DPR/ColBERT) $\rightarrow$ Evidenzaggregation $\rightarrow$ Generator. Vorteile: Aktualität, Attribution, weniger Halluzination. Für \emph{Knowledge Graph QA} koppeln Ansätze Retrieval/Reasoning mit SPARQL; LC-QuAD~2.0 liefert komplexe, mehrhopfige Fragen über Wikidata/DBpedia \cite{dubey2019lcquad2}.
 
-\paragraph{Grenzen.} CoT kann fehlleiten (halluzinierende Begründungen), skaliert schwächer bei kleinen Modellen und ist sensibel gegenüber Prompt-Formulierungen.
-
-\subsection{Reason \& Act: Tool-Nutzung mit ReAct}
-ReAct verschachtelt \emph{Thought–Action–Observation} und verbindet sprachliches Denken mit Aktionen (z.\,B.\ Suche/Lookup) \cite{yao2023react}. 
-Das reduziert Halluzination, erhöht Nachvollziehbarkeit und schlägt auf wissensintensiven Aufgaben reine Action- oder reine CoT-Baselines.
-
-\paragraph{Muster.}
-\begin{verbatim}
-Q: ...
-Thought 1: Ich sollte X nachschlagen.
-Action 1: Search[X]
-Observation 1: ...
-Thought 2: ...
-Action 2: Lookup["..."]
-...
-Final Answer: ...
-\end{verbatim}
-
-\paragraph{Typische Fehlermodi.} Uninformative Suchen, Gedankenschleifen; begrenzte Schrittzahl, besseres Retrieval und Heuristiken (Fallback auf CoT-Self-Consistency) helfen.
-
-\subsection{Instruction Tuning und RLHF}
-\subsubsection{Pipeline}
-Ouyang et~al.\ \cite{ouyang2022training} zeigen, dass \emph{Instruction-Modelle} via \emph{SFT} (Demonstrationen), \emph{Belohnungsmodell} (Präferenzranking) und \emph{PPO} (mit KL-Regularisierung) von Menschen systematisch bevorzugt werden — teils übertreffen 1{,}3B-Modelle ein 175B GPT-3 \cite{ouyang2022training}. 
-
-\begin{enumerate}
-  \item \textbf{SFT}: überwachte Feinanpassung auf Instruktions-Demos.
-  \item \textbf{Reward Modeling}: Labele Präferenzen $\Rightarrow$ Skalarbewertung.
-  \item \textbf{RL (PPO)}: Optimierung gegen Reward; KL zur SFT-Policy begrenzt Drift.
-\end{enumerate}
-
-\paragraph{Befunde.} Mehr Hilfsbereitschaft/Wahrhaftigkeit, geringere Toxizität (unter „respektvollen“ Prompts), und geringere \emph{Alignment Tax} durch Mischen mit Pretrain-Updates (PPO-PTX). Bias/Halluzination bleiben Forschungsfelder.
-
-\subsection{Wissensintensive Aufgaben: Retrieval-Augmented Generation}
-\subsubsection{Prinzip}
-RAG trennt parametrisierte Weltkenntnis (LM) und nicht-parametrisches Wissen (\emph{Index}) \cite{lewis2020rag}. Pipeline: (1) Query-Formulierung, (2) Retriever (BM25/DPR/ColBERT), (3) Aggregation der Evidenz (Late/Joint Fusion), (4) Generator konditioniert auf Belege. 
-Vorteile: aktuellere Fakten, Transparenz, geringere Halluzination, besseres \emph{Attribution}. 
-
-\subsubsection{KG-QA und LC-QuAD 2.0}
-Für \emph{Knowledge Graph QA} koppeln Modelle Retrieval/Reasoning mit SPARQL-Ableitung; LC-QuAD~2.0 bietet komplexe, mehrhopfige KG-Fragen über Wikidata/DBpedia \cite{dubey2019lcquad2}. Prompting kann \emph{Schema-Ahnung} (Entitäten/Relationen) fördern; alternativ generieren Modelle erst \emph{Zwischenformate} (z.\,B.\ NL2Logic) und führen dann Abfragen aus.
-
-\subsection{Strukturiertes Ausgeben}
-LLMs sind „free-form“ — viele Anwendungen verlangen jedoch \emph{strukturierte} Ausgaben (JSON, Tabellen, SQL, SPARQL). Optionen:
-\begin{itemize}
-  \item \textbf{Constrained Decoding}: Grammatik/Regex/JSON-Schema zur Laufzeit erzwingen.
-  \item \textbf{Schema-Prompting}: strikte Beispiele/Validierungs-Hinweise.
-  \item \textbf{RL nach Schema-Belohnung}: Belohnt valide und semantisch korrekte Strukturen (vgl.\ \cite{cong2023schema}).
-\end{itemize}
+\subsection{Strukturierte Ausgaben (SPARQL/JSON)}
+LLMs sind „free-form“, viele Anwendungen verlangen \emph{strukturierte} Ausgaben. Optionen: (i) \emph{Constrained Decoding} mit Grammatik/Regex/JSON-Schema, (ii) \emph{Schema-Prompting} mit strikten Beispielen, (iii) \emph{RL} mit Schema-basiertem Reward \cite{cong2023schema}. Für diese Arbeit ist das entscheidend, um valide SPARQL-Updates zu erzeugen.
 
 \subsection{Sicherheit, Datenschutz und verantwortungsvolle Nutzung}
-\subsubsection{Extraktion von Trainingsdaten}
-Arbeiten wie \cite{carlini2021extracting} zeigen, dass Modelle memorisierte Trainingsfragmente \emph{extrahierbar} machen können (z.\,B.\ seltene Sequenzen, PII). Risikofaktoren: Overfitting, Deduplikationsfehler, aggressive Sampling-Einstellungen.
+Modelle können Trainingsfragmente (inkl.\ PII) memorisieren; Extraktion ist gezeigt \cite{carlini2021extracting}. Gegenmaßnahmen: Datenkurationshygiene, konservatives Dekodieren, Quellenbindung (RAG/Tool-Use) \cite{lewis2020rag,yao2023react}. \emph{Differential Privacy} (DP-SGD) begrenzt den Beitrag einzelner Beispiele formal, mit Genauigkeits-Trade-offs \cite{abadi2016deep}. In Deployments sind Logging-Policies, Datenminimierung und Transparenz zentral.
 
-\subsubsection{Differential Privacy (DP)}
-DP-SGD \cite{abadi2016deep} begrenzt den Beitrag einzelner Beispiele durch Gradientenclipping + Rauschen und liefert formale Garantien ($\varepsilon,\delta$). Trade-off: Genauigkeit vs.\ Privatsphäre; praktikabel vor allem in kleineren/feinabgestimmten Settings oder beim Training von \emph{Retrievern}/Hilfsmodellen.
-
-\subsubsection{Halluzination und Attribution}
-Halluzinationen entstehen u.\,a.\ durch fehlende Evidenz und glatte LM-Priors. Gegenmaßnahmen: RAG/Tool-Use (ReAct), Quellenangaben, Unsicherheitskommunikation, konservative Dekodierung, Post-Verifikation (z.\,B.\ konsensbasierte Selbstprüfung).
-
-\subsection{Evaluierung}
-\subsubsection{Automatisch vs.\ menschlich}
-Perplexity ist nur ein Vorindikator. Aufgabenmetriken (EM/F1/ROUGE/Accuracy) und menschliche Präferenzbewertungen (Hilfsbereitschaft, Wahrhaftigkeit, Harmlosigkeit) sind komplementär \cite{ouyang2022training}. 
-
-\subsubsection{Reasoning-Spezifika}
-Für CoT/Tool-Use sollten \emph{Rationale} und \emph{Trajektorien} mitbewertet werden (Korrektheit, Konsistenz, Zitierbarkeit). Selbstkonsistenz und Stresstests (Distraktoren, Gegenfakten) erhöhen Aussagekraft.
+\subsection{Evaluierung (kurz)}
+Perplexity ist nur Vorindikator. Aufgabenmetriken (EM/F1/ROUGE/Accuracy) und menschliche Präferenzbewertungen sind komplementär \cite{ouyang2022training}. Für CoT/Tool-Use sollten auch \emph{Rationale}/Trajektorien bewertet werden (Korrektheit, Konsistenz, Zitierbarkeit).
 
 \subsection{Grenzen und offene Herausforderungen}
 \begin{itemize}
-  \item \textbf{Skalierungskosten \& Effizienz}: Speicher/Inference; Sparsity (MoE), KV-Caching, distillation.
-  \item \textbf{Kontextlänge}: Quadratische Attention vs.\ Long-Context-Methoden; Retrieval als Entlastung.
-  \item \textbf{Robustheit/Bias}: Datenkurationslücken, gesellschaftliche Auswirkungen; Evaluationslücken.
-  \item \textbf{Erklärbarkeit}: Rationale $\neq$ wahre interne Begründung; dennoch nützlich zur Auditierbarkeit.
+  \item \textbf{Effizienz}: Kontextlänge, $\mathcal{O}(n^2)$-Attention; Abhilfe durch Retrieval, Sparsity, Distillation.
+  \item \textbf{Robustheit/Bias}: Datenkurationslücken; belastbare, reproduzierbare Evaluationen fehlen oft.
+  \item \textbf{Erklärbarkeit}: Rationale sind nützlich, aber keine „wahren“ Gründe; Audit statt Interpretation.
 \end{itemize}
 
-\subsection{Praxisbausteine (Kochrezepte)}
+\subsection{Praxisbausteine (kompakt)}
 \subsubsection*{Prompting (Zero/Few-Shot)}
 \begin{verbatim}
-Rolle: Du bist ein präziser Assistent.
-Aufgabe: Beantworte die Frage in 2-3 Sätzen mit Quelle.
+Rolle: Präziser Assistent.
+Aufgabe: Beantworte in 2-3 Sätzen mit Quelle.
 Format: Antwort + [Quelle: URL/Titel].
-
-Beispiele:
-Q: ...
-A: ... [Quelle: ...]
-
+Beispiel(e): ...
 Neue Frage: ...
 \end{verbatim}
 
-\subsubsection*{CoT + Self-Consistency}
-\begin{verbatim}
-Anweisung: Denke Schritt-für-Schritt. Gib am Ende NUR "Antwort: <...>" aus.
-(Bei Deployment 5-10 Stichproben generieren, Mehrheitsvotum.)
-\end{verbatim}
-
-\subsubsection*{ReAct-Skelett (mit Wikipedia-API o. RAG)}
+\subsubsection*{ReAct-Skelett}
 \begin{verbatim}
 Q: ...
-Thought 1: ...
-Action 1: Search[...]
-Observation 1: ...
-Thought 2: ...
-Action 2: Lookup["..."]
+Thought: ...
+Action: Search/Lookup[...]
+Observation: ...
 Final Answer: ...
 \end{verbatim}
 
-\subsubsection*{Strukturierte Ausgabe (JSON-Template)}
+\subsubsection*{Strukturierte Ausgabe (JSON/Schema)}
 \begin{verbatim}
-Gib ausschließlich validen JSON im folgenden Schema aus:
-{"answer": "<string>", "evidence": [{"title": "...", "url": "..."}]}
+Gib ausschließlich validen JSON:
+{"answer":"<string>","evidence":[{"title":"...","url":"..."}]}
 \end{verbatim}
 
 \subsection{Zusammenfassung}
-LLMs kombinieren Transformernetzwerke, skalengetriebenes Vortraining und in-Kontext-Anpassung zu universellen Sprachwerkzeugen. \emph{CoT} verbessert mehrschrittiges Denken, \emph{ReAct} verankert Antworten in externer Evidenz, und \emph{RLHF} richtet Modelle auf menschliche Präferenzen aus. Für wissensintensive Szenarien ist \emph{RAG} ein zentraler Baustein. Sicherheit und Datenschutz erfordern sorgfältige Datenkuration, Evaluationshygiene, Privatsphäre-Techniken und verantwortliches Deployment. 
+LLMs kombinieren Transformernetzwerke, skalengetriebenes Vortraining und In-Context-Lernen zu universellen Sprachwerkzeugen. \emph{CoT} verbessert mehrschrittiges Denken, \emph{ReAct} verankert Antworten in externer Evidenz, \emph{RAG} ist zentral für wissensintensive Szenarien. Für diese Arbeit sind strukturierte Ausgaben (SPARQL), Guardrails und Datenschutzmaßnahmen (u.\,a.\ DP) entscheidend \cite{vaswani2017attention,brown2020language,wei2022chain,yao2023react,ouyang2022training,lewis2020rag,holtzman2020curious,abadi2016deep,carlini2021extracting,dubey2019lcquad2,cong2023schema}.
 
-\subsection*{Weiterführende Literatur}
-\begin{itemize}
-  \item Transformer und Attention \cite{vaswani2017attention}
-  \item GPT-3 und In-Context-Lernen \cite{brown2020language}
-  \item Chain-of-Thought \cite{wei2022chain}
-  \item ReAct \cite{yao2023react}
-  \item RLHF/Instruction Tuning \cite{ouyang2022training}
-  \item RAG \cite{lewis2020rag}
-  \item Neural Text Degeneration \cite{holtzman2020curious}
-  \item Differential Privacy \cite{abadi2016deep}
-  \item Data Extraction \cite{carlini2021extracting}
-  \item LC-QuAD~2.0 \cite{dubey2019lcquad2}
-  \item Schema-basiertes RL für strukturierte Outputs \cite{cong2023schema}
-\end{itemize}
+
+
 
 
 
@@ -466,88 +355,42 @@ LLMs kombinieren Transformernetzwerke, skalengetriebenes Vortraining und in-Kont
 \section{Prompt-Programmierung und Few-Shot Learning}
 \label{sec:prompting}
 
-
 \subsection{Von \emph{Pre-Train, Fine-Tune} zu \emph{Pre-Train, Prompt, Predict}}
-In der aktuellen Entwicklung der Sprachverarbeitung hat sich das Paradigma von rein aufgaben\-spezifischer Supervision hin zu vortrainierten Sprachmodellen (LMs) mit Aufgabenspezifikation über Prompts verschoben. Während klassische Systeme die bedingte Wahrscheinlichkeit \(P(y \mid x;\theta)\) direkt durch überwachten Lernens optimieren, modellieren Prompting-Methoden die Textwahrscheinlichkeit \(P(x;\theta)\) und reformulieren Aufgaben so, dass ein LM mit geeigneter Texteingabe (\emph{Prompt}) die gewünschte Ausgabe produziert \cite{liu2023survey}. Dieses \emph{Pre-Train, Prompt, Predict}-Denken bietet drei zentrale Vorteile: (i) Nutzung großskaliger Rohtexte für das Vortraining, (ii) wenige bis keine gelabelten Daten (\emph{few-/zero-shot}) durch geschickte Aufgabenformulierung, (iii) schnelle Adaptierbarkeit über Prompt- statt Objektiv-Engineering \cite{liu2023survey}.
+Das Paradigma hat sich von aufgabenspezifischem Training hin zu vortrainierten Sprachmodellen mit Aufgabenspezifikation über Prompts verschoben. Klassische Systeme optimieren $P(y\mid x;\theta)$; Prompting reformuliert Aufgaben so, dass ein LM via $P(x;\theta)$ mit geeigneter Texteingabe (\emph{Prompt}) die gewünschte Ausgabe erzeugt \cite{liu2023survey}. Vorteile: Nutzung großer Rohtexte, wenige bis keine Labels (zero-/few-shot) und schnelle Adaptierbarkeit über Prompt- statt Objektiv-Engineering \cite{liu2023survey}.
 
-\subsection{Bausteine des Promptings}
-\subsubsection{Prompt-Template-Engineering}
-Die Wahl der Prompt-Form prägt maßgeblich die Modellleistung. Gängige Formen sind (i) \emph{Prefix}-Prompts (auto\-regressive LMs; generative Aufgaben), (ii) \emph{Cloze}-Prompts (maskierte LMs; Lückentext), (iii) Vorlagen für Mehrfacheingaben (z.\,B. Satzpaare) \cite{liu2023survey}. Template-Design kann \emph{manuell} (intuitiv, aber fehleranfällig) oder \emph{automatisiert} erfolgen:
-\begin{itemize}
-  \item \textbf{Diskrete Prompts}: Mining aus Korpora, Paraphrasierung, gradientenbasierte Suche, generative Template-Erzeugung mit seq2seq-LMs; statisch oder dynamisch pro Eingabe \cite{liu2023survey}.
-  \item \textbf{Kontinuierliche (``soft'') Prompts}: Optimierung von Prompt-Embeddings (z.\,B. Prefix-/Prompt-Tuning), teils initiiert durch diskrete Seeds oder als Hybrid mit harten Tokens \cite{liu2023survey}.
-\end{itemize}
-
-\subsubsection{Prompt-Answer-Engineering}
-Neben der Vorlage ist auch der \emph{Antwortraum} entscheidend: Token, Spannen oder ganze Sätze. Für Klassifikation sind häufig eingeschränkte Labelwörter (\emph{Verbalizer}) mit Mapping auf Klassen sinnvoll; für Generierung werden längere Sequenzen verwendet. Analog zum Template lassen sich auch Antwortmengen manuell definieren, paraphrasieren, heuristisch durchsuchen oder kontinuierlich optimieren \cite{liu2023survey}.
-
-\subsubsection{Mehrfach-Prompts und Kontext}
-Leistung und Stabilität steigen oft durch \emph{Prompt-Ensembling} (gleich-/gewichtete Mittelung, Mehrheitsvotum, Distillation) sowie \emph{Prompt-Augmentation} über \emph{In-Context}-Demonstrationen (Beispielauswahl, -reihenfolge, Retrieval)\cite{liu2023survey}. Für komplexe Aufgaben helfen \emph{Komposition} (Unterprompts komponieren) und \emph{Dekomposition} (Problem in Teilprompts zerlegen), um Struktur sichtbar zu machen \cite{liu2023survey}.
+\subsection{Bausteine des Promptings (kompakt)}
+\textbf{Template-Engineering:} Formen wie \emph{Prefix}-Prompts (autoregressiv), \emph{Cloze}-Prompts (maskiert) oder Vorlagen für Mehrfacheingaben; Design manuell oder automatisiert \cite{liu2023survey}.\\
+\textbf{Answer-Engineering:} Antwortraum gezielt einschränken (Labelwörter/Verbalizer vs.\ freie Generierung); auch hier manuell, heuristisch oder kontinuierlich optimiert \cite{liu2023survey}.\\
+\textbf{Kontext \& Multiprompts:} Prompt-Ensembling (Mehrheitsvotum/Distillation) und \emph{In-Context}-Demonstrationen (Auswahl/Reihenfolge/Retrieval) stabilisieren; Komposition/Dekomposition macht Aufgabenstruktur explizit \cite{liu2023survey}.
 
 \subsection{Trainingsstrategien im Prompting-Spektrum}
-Prompting kann rein \emph{tuning-frei} (reines Prompting, ggf. mit Demonstrationen) oder mit Parameterupdates betrieben werden:
+Ohne LM-Updates (\emph{tuning-frei}) ist Prompting effizient, aber prompt-sensitiv. Alternativen: \emph{Prompt-Tuning} (nur Prompt-Parameter), klassisches Feintuning mit fixem Prompt oder gemeinsame Optimierung (Prompt+LM) mit höherem Aufwand, aber mehr Kapazität \cite{liu2023survey}.
+
+\subsection{Reasoning-Prompts: CoT, Self-Consistency, Kalibrierung}
+\textbf{Chain-of-Thought (CoT):} Few-Shot-Beispiele inkl.\ Zwischenschritte (\emph{Rationale}) verbessern mehrschrittiges Denken, v.\,a.\ bei größeren Modellen \cite{wei2022cot}.\\
+\textbf{Self-Consistency:} Statt einer CoT-Antwort mehrere Denkpfade sampeln und die konsistenteste Endlösung wählen; wenige Stichproben (5–10) genügen oft \cite{wang2022selfconsistency}.\\
+\textbf{Kontextuelle Kalibrierung:} Korrigiert Antworttendenzen (z.\,B.\ Reihenfolge-/Common-Token-Bias) durch Vorab-Schätzung auf inhaltsfreien Inputs; senkt Varianz ohne Zusatzdaten \cite{zhao2021calibrate}.
+
+\subsection{KGQA \& Text-zu-SPARQL (praxisnah)}
+Für Wissensgraph-Fragen ist \emph{Text-zu-SPARQL} robuster als Freitext: NL $\rightarrow$ SPARQL, Ausführung liefert belastbare Ergebnisse. Effektiv sind (i) T-Box- und A-Box-Nutzung, (ii) gezielte \emph{Fragmentierung} des relevanten Graphausschnitts, (iii) Generierung mehrerer Query-Varianten mit Auswahl per Ausführungserfolg \cite{avila2024autokgqagpt}. Praktische Leitlinien: Präfixe/Namespaces sichern, optionale Properties als \texttt{OPTIONAL}, String-Filter konsistent (Regex, \texttt{i}-Flag) \cite{avila2024autokgqagpt}.
+
+\subsection{Von Prompt-Ketten zu Pipelines: DSPy}
+\emph{DSPy} beschreibt LM-Schritte deklarativ (\emph{Signaturen, Module}) und kompiliert automatisch zu hochwertigen Prompt-/Finetuning-Strategien. Teleprompter bootstrappen Demonstrationen, wählen Hyperparameter und können feintunen oder ensemblen \cite{khattab2023dspy}. Vorteil: weniger fragile Strings, mehr reproduzierbare, selbstverbessernde Pipelines—nützlich für Multi-Hop-Retrieval, KGQA oder Agent-Loops.
+
+\subsection{Offene Punkte und Best Practices}
+\textbf{Offene Punkte:} Prompt-Transfer über Modellfamilien, Kosten von CoT/Ensembles, Bias/Format-Effekte trotz Kalibrierung, strukturierte Ausgaben für Tabellen/Graphen \cite{liu2023survey,zhao2021calibrate}.\\
+\textbf{Konkret umsetzbar:}
 \begin{enumerate}
-  \item \textbf{Tuning-frei}: Zero-/Few-Shot ohne LM-Update; maximal effizient, aber prompt-sensitiv \cite{liu2023survey}.
-  \item \textbf{Fixiertes LM \& Prompt-Tuning}: Nur Prompt-Parameter werden gelernt (z.\,B. Prefix-/Prompt-Tuning); meist robust im Few-Shot, begrenzte Kapazität bei viel Daten \cite{liu2023survey}.
-  \item \textbf{Fixiertes Prompt \& LM-Tuning}: Klassisches Fine-Tuning mit fester Vorlage; oft starker Few-Shot-Booster \cite{liu2023survey}.
-  \item \textbf{Prompt+LM-Tuning}: Gemeinsame Optimierung; flexibel und stark, aber ressourcenintensiv \cite{liu2023survey}.
-\end{enumerate}
-
-\subsection{Argumentation mit \emph{Chain-of-Thought} und \emph{Self-Consistency}}
-\subsubsection{Chain-of-Thought (CoT)}
-CoT-Prompting erweitert Few-Shot-Beispiele um natürliche Zwischenschritte (\emph{Reasoning-Rationale}). Große Modelle (typisch \(\ge\)100B Parameter) zeigen damit emergente Denkfähigkeiten: Sie zerlegen Aufgaben in interpretierbare Teilrechnungen und steigern die Genauigkeit besonders bei mehrstufigen mathematischen, logischen und symbolischen Benchmarks \cite{wei2022cot}. CoT ist promptbasiert (kein zusätzliches Training), verbessert Nachvollziehbarkeit und Fehleranalyse und wirkt besonders bei komplexen Aufgaben.
-
-\subsubsection{Self-Consistency}
-Anstelle einer einzelnen gierigen CoT-Generierung wird bei \emph{Self-Consistency} ein diverser Satz an Denkpfaden gesampelt und anschließend die \emph{konsistenteste} Endantwort via Mehrheitsvotum (oder gewichteter Marginalisierung) gewählt. Diese \emph{sample-and-marginalize}-Strategie verbessert CoT über viele Benchmarks signifikant (z.\,B. GSM8K, SVAMP, ARC, StrategyQA) und ist trainingsfrei sowie modellagnostisch \cite{wang2022selfconsistency}. Praktisch zeigt sich eine schnelle Sättigung: Wenige Pfade (z.\,B. 5–10) heben die Leistung stark an.
-
-\subsubsection{Kalibrierung vor der Nutzung}
-Few-Shot-Prompting ist oft volatil: Reihenfolgeeffekte, Mehrheitslabel- und Aktualitätsbias sowie Common-Token-Bias verschieben die Ausgabeverteilung. \emph{Kontextuelle Kalibrierung} schätzt zunächst Antworttendenzen auf inhaltsfreien Inputs (z.\,B. ``N/A'') und korrigiert dann die Wahrscheinlichkeiten. Das reduziert Varianz und steigert die mittlere Genauigkeit deutlich, ohne zusätzliche Daten \cite{zhao2021calibrate}. Kalibrierung und CoT/Self-Consistency ergänzen sich in der Praxis.
-
-\subsection{Prompting jenseits klassischer Benchmarks: KGQA \& Text-zu-SPARQL}
-\subsubsection{Direktantwort vs. Text-zu-SPARQL}
-Für Wissensgraph-Fragen (\emph{KGQA}) zeigen Studien, dass \emph{Text-zu-SPARQL} mit geeigneten Prompts stabiler und genauer ist als direkte Freitextantworten: Das LM übersetzt die NL-Frage in SPARQL, die Ausführung liefert belastbare Resultate. Besonders effektiv ist die Kombination aus T-Box (Schema) und A-Box (Instanzen) sowie die Reduktion des dem LM übergebenen Graphausschnitts (\emph{Fragmentierung}) \cite{avila2024autokgqagpt}. Das Framework \emph{Auto-KGQAGPT} illustriert:
-\begin{itemize}
-  \item Offline-Indizierung von Klassen/Eigenschaften/Instanzen,
-  \item Online-Selektion relevanter Teilgraphen pro Frage,
-  \item Generierung mehrerer SPARQL-Varianten und Wahl der bestpassenden anhand Ausführungsergebnissen,
-  \item Erzeugung der finalen NL-Antwort aus Query+Result.
-\end{itemize}
-Ergebnisse zeigen: weniger Tokens, weniger Halluzinationen, robuste Genauigkeit—insbesondere bei arithmetischen/aggregativen Anfragen, bei denen direkte Generierung häufiger fehlgeht \cite{avila2024autokgqagpt}.
-
-\subsubsection{Praktische Implikationen}
-Für reale KGs (hohe Kardinalitäten, Inferenz-Tripel) ist \emph{Fragmentierung} technisch essenziell (Kontextfenster), fachlich hilfreich (Relevanzfokus) und methodisch robust (SPARQL als \emph{Exekutionsgrund}). Prompt-Templates sollten Präfixe/Namespaces sichern, optionale Properties als \texttt{OPTIONAL} behandeln und Zeichenkettenfilter konsistent (\texttt{regex}, \texttt{i}-Flag) spezifizieren \cite{avila2024autokgqagpt}.
-
-\subsection{Von Prompt-Ketten zu selbstverbessernden Pipelines: DSPy}
-\emph{DSPy} abstrahiert LM-Aufrufe als deklarative, parametrisierte Module (\emph{Signaturen, Module, Teleprompter}) und kompiliert ganze Pipelines automatisch zu hochwertigen Prompt-/Finetuning-Strategien \cite{khattab2023dspy}. Kerngedanke:
-\begin{itemize}
-  \item \textbf{Signaturen} beschreiben \emph{was} transformiert werden soll (z.\,B. Frage\(\rightarrow\)Antwort), nicht \emph{wie} ein Prompt zu formulieren ist.
-  \item \textbf{Module} (z.\,B. \texttt{Predict}, \texttt{ChainOfThought}, \texttt{ReAct}) kapseln Techniken und sind austauschbar.
-  \item \textbf{Teleprompter (Compiler)} bootstrappen wenige, aber nützliche Demonstrationen, wählen Hyperparameter (z.\,B. per Random/Search/Optuna) und können feintunen, ensemblel'n oder Kontrollfluss variieren.
-\end{itemize}
-Fallstudien zeigen, dass wenige Zeilen DSPy-Code Pipelines erzeugen, die handgetunte Prompt-Ketten \emph{ohne} manuell kuratierte Prompts übertreffen, und dies auch mit kleineren offenen LMs wettbewerbsfähig leisten \cite{khattab2023dspy}. Für die Praxis bedeutet dies: weniger fragile String-Prompts, mehr reproduzierbare, automatisch verbesserbare Komponenten—ideal für komplexe Aufgaben wie Multi-Hop-Retrieval, KGQA oder Agent-Loops.
-
-\subsection{Offene Herausforderungen und Best Practices}
-\subsubsection*{Offene Punkte}
-\begin{itemize}
-  \item \textbf{Modellwahl \& Transfer}: Prompts generalisieren nicht immer über Modellgrößen/-familien hinweg; systematische Vergleiche fehlen \cite{liu2023survey}.
-  \item \textbf{Skalierbarkeit}: Ensemble/CoT/Self-Consistency kosten Zeit/Compute; adaptive Budgetierung (z.\,B. nur auf schwierigen Instanzen) ist ein aktives Feld.
-  \item \textbf{Kalibrierung \& Bias}: Kontextkalibrierung hilft, doch bleibt Prompt-Design anfällig für Formateffekte \cite{zhao2021calibrate}.
-  \item \textbf{Struktur}: Tabellen/Graphen/Pläne elegant in Templates/Antworten zu gießen, ist weiterhin herausfordernd \cite{liu2023survey}.
-\end{itemize}
-
-\subsubsection*{Best Practices (konkret umsetzbar)}
-\begin{enumerate}
-  \item \textbf{Start} mit klarer Aufgabenformulierung \(\rightarrow\) geeignete Promptform (Prefix/Cloze) und kleiner, kuratierter Antwortraum.
-  \item \textbf{Stabilität} durch \emph{Prompt-Augmentation} (repräsentative Demonstrationen) und \emph{Kontextuelle Kalibrierung} \cite{zhao2021calibrate}.
-  \item \textbf{Denkaufgaben}: \emph{CoT} aktivieren; bei Bedarf \emph{Self-Consistency} (5–10 Reasoning-Samples) \cite{wei2022cot,wang2022selfconsistency}.
-  \item \textbf{Wissensfragen}: strukturierte Exekution (z.\,B. SPARQL) statt reine Generierung; KG-Fragmentierung plus Vorlagen-Disziplin \cite{avila2024autokgqagpt}.
-  \item \textbf{Pipelines}: deklarativ (DSPy) bauen und vom Compiler Demonstrationen/Hyperparameter optimieren lassen \cite{khattab2023dspy}.
-  \item \textbf{Evaluation}: Neben Genauigkeit Varianz und Reproduzierbarkeit messen (verschiedene Seeds, Reihenfolgen, Prompt-Formate).
+  \item Aufgabe präzisieren $\rightarrow$ passende Promptform (Prefix/Cloze) \& kleiner Antwortraum.
+  \item Stabilität: \emph{In-Context}-Demonstrationen + kontextuelle Kalibrierung \cite{zhao2021calibrate}.
+  \item Denkaufgaben: \emph{CoT} einschalten; bei Bedarf \emph{Self-Consistency} (5–10 Pfade) \cite{wei2022cot,wang2022selfconsistency}.
+  \item Wissensfragen: strukturierte Exekution (SPARQL) statt Freitext; KG-Fragmentierung strikt halten \cite{avila2024autokgqagpt}.
+  \item Pipelines: deklarativ mit \emph{DSPy} bauen; Compiler Demonstrationen/Hyperparameter wählen lassen \cite{khattab2023dspy}.
 \end{enumerate}
 
 \subsection{Fazit}
-Prompting verschiebt den Schwerpunkt von datenintensiver Supervision zu geschickter Aufgabenformulierung. Mit Template- und Answer-Engineering, CoT und Self-Consistency sowie kontextueller Kalibrierung lassen sich starke, robuste Systeme bauen. Für wissensintensive Domänen bietet \emph{Text-zu-SPARQL} eine präzise, skalierbare und halluzinationsarme Alternative. Programmiermodelle wie \emph{DSPy} heben Prompting aus der Ebene fragiler Strings auf modulare, kompilierbare Pipelines. Zusammen liefern diese Bausteine einen praktikablen Werkzeugkasten, um moderne LMs verlässlich, effizient und nachvollziehbar in realen Anwendungen einzusetzen \cite{liu2023survey,wei2022cot,wang2022selfconsistency,zhao2021calibrate,avila2024autokgqagpt,khattab2023dspy}.
-Ontologiefragmente werden gezielt gefiltert, um den LLM-Kontext kompakt und relevant zu halten \cite{avila2024autokgqagpt}.
+Prompting verlagert den Schwerpunkt von datenintensiver Supervision zu geschickter Aufgabenformulierung. Mit Template-/Answer-Engineering, CoT+Self-Consistency und Kalibrierung entstehen robuste Systeme; für wissensintensive Domänen ist \emph{Text-zu-SPARQL} eine präzise, halluzinationsarme Strategie. Deklarative Pipelines (DSPy) erhöhen Reproduzierbarkeit und Wartbarkeit \cite{liu2023survey,wei2022cot,wang2022selfconsistency,zhao2021calibrate,avila2024autokgqagpt,khattab2023dspy}.
+
 
 
 
@@ -557,105 +400,63 @@ Ontologiefragmente werden gezielt gefiltert, um den LLM-Kontext kompakt und rele
 \label{chap:Query-validation-explainability}
 
 \subsection{Motivation}
-RDF, RDFS und OWL beschreiben vorrangig \emph{Struktur}. Für belastbare Datenprodukte brauchen wir zusätzlich:
-(i) \textbf{Validierung} gegen modellierte Erwartungen (Constraints),
-(ii) \textbf{Erklärbarkeit} von Ergebnissen und Fehlstellen (Provenienz \& Why-Not),
-(iii) \textbf{robuste OPTIONAL-Nutzung} für Teilantworten ohne unkontrollierbare Komplexität.
-Dieses Kapitel führt drei Bausteine zusammen: SPIN für modellnahe Validierung und Regeln \cite{spin-w3c}, schwach gut konzipiertes (wwd) SPARQL zur sicheren OPT-Verwendung \cite{kaminski-kostylev-beyond-well-designed} und Provenienz-Halbringe als algebraisches Fundament für Explainability \cite{green-provenance-semirings,herschel-why-why-not,herschel-survey}.
+RDF/RDFS/OWL definieren primär \emph{Struktur}. Für belastbare Datenprodukte braucht es zusätzlich (i) \textbf{Validierung} gegen modellierte Erwartungen, (ii) \textbf{Erklärbarkeit} (Provenienz \& Why-Not), (iii) \textbf{beherrschte OPTIONAL}-Nutzung. Wir kombinieren dafür: SPIN für modellnahe Validierung/Regeln \cite{spin-w3c}, schwach gut konzipiertes (wwd) SPARQL für sichere \texttt{OPTIONAL}s \cite{kaminski-kostylev-beyond-well-designed} und Provenienz-Halbringe als algebraisches Fundament \cite{green-provenance-semirings,herschel-why-why-not,herschel-survey}.
 
-\subsection{Validierung mit SPIN}
-\subsubsection{Grundidee}
-SPIN (\emph{SPARQL Inferencing Notation}) repräsentiert SPARQL als RDF und verknüpft Abfragen direkt mit Klassen:
+\subsection{Validierung mit SPIN (kurz)}
+\textbf{SPIN} (\emph{SPARQL Inferencing Notation}) repräsentiert SPARQL als RDF und verknüpft Abfragen direkt mit Klassen:
 \begin{itemize}
-  \item \texttt{spin:constraint}: Bedingungen (ASK/CONSTRUCT), die Instanzen erfüllen müssen.
-  \item \texttt{spin:rule}: Inferenz (CONSTRUCT / UPDATE) zur Ableitung zusätzlicher Tripel.
+  \item \texttt{spin:constraint} (ASK/CONSTRUCT): Bedingungen, die Instanzen erfüllen müssen.
+  \item \texttt{spin:rule}: Inferenz via CONSTRUCT/UPDATE.
   \item \texttt{spin:constructor}: Initialwerte beim Anlegen neuer Instanzen.
 \end{itemize}
-Abfragen laufen im Klassenkontext mit vorgebundener Variable \texttt{?this}; Vererbung erfolgt entlang \texttt{rdfs:subClassOf}. Zur Optimierung kann \texttt{spin:thisUnbound} auf \texttt{true} gesetzt werden, wenn die WHERE-Bedingungen \texttt{?this} selbst binden \cite{spin-w3c}.
+Abfragen laufen im Klassenkontext mit vorgebundener Variable \texttt{?this}; Vererbung folgt \texttt{rdfs:subClassOf}. \texttt{spin:thisUnbound=true} erlaubt Optimierungen \cite{spin-w3c}. \emph{CONSTRUCT}-Constraints können \texttt{spin:ConstraintViolation} erzeugen (mit \texttt{spin:fix}-Hinweisen).
 
-\subsubsection{Fehlermeldungen und Auto-Fixes}
-CONSTRUCT-Constraints können \texttt{spin:ConstraintViolation} erzeugen (lesbares \texttt{rdfs:label}, \texttt{spin:violationRoot}, \texttt{spin:violationPath}) und \texttt{spin:fix}-Hinweise auf \texttt{spin:UpdateTemplate}s liefern.
-
-\subsubsection{Minimalbeispiel (Constraint)}
-\begin{lstlisting}[language=turtle,basicstyle=\ttfamily\small,caption={SPIN-Constraint: Quadrat konsistent halten},label={lst:spin-constraint}]
-@prefix ex:   <http://example.org/> .
+\paragraph{Minimalbeispiel.}
+\begin{lstlisting}[language=turtle,basicstyle=\ttfamily\small]
+@prefix ex: <http://example.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix spin: <http://spinrdf.org/spin#> .
-@prefix sp:   <http://spinrdf.org/sp#> .
+@prefix sp: <http://spinrdf.org/sp#> .
 
 ex:Square a rdfs:Class ;
-  spin:constraint [
-    a sp:Ask ;
-    sp:text """ASK {
-      ?this ex:width ?w ; ex:height ?h .
-      FILTER(?w != ?h)  # TRUE => Verletzung
-    }""" ;
-  ] .
+  spin:constraint [ a sp:Ask ;
+    sp:text """ASK { ?this ex:width ?w ; ex:height ?h .
+                     FILTER(?w != ?h) }""" ] .
 \end{lstlisting}
 
-\paragraph{Praxisleitfaden (kurz).}
-\begin{itemize}
-  \item Lege Prüfungen als \texttt{ASK} an (schnell) und ergänze bei Bedarf \texttt{CONSTRUCT}-basierte Violations mit \texttt{spin:fix}.
-  \item Halte Regeln/Constraints \emph{klassenlokal} und granular; nutze Bibliotheken über dereferenzierbare URIs.
-  \item Begrenze UPDATE-Regeln (Iterationslimit, Reihenfolge via \texttt{spin:nextRuleProperty}), um Loops zu vermeiden.
-\end{itemize}
+\paragraph{Praxisleitfaden.}
+(1) Prüfungen als \texttt{ASK} (schnell), Violations optional via \texttt{CONSTRUCT}. (2) Regeln/Constraints \emph{klassenlokal} und granular halten. (3) UPDATE-Regeln begrenzen (Iterationslimit/Reihenfolge), um Loops zu vermeiden.
 
-\subsection{Explainability: Provenienz und Why-Not}
-\subsubsection{Algebraisches Fundament}
-Annotiere Tupel mit Elementen eines kommutativen Halbrings \(K\) (\emph{K-Relationen}). Relationale Algebra/Datalog werden homomorph auf Annotationen gehoben \cite{green-provenance-semirings}. Dadurch:
+\subsection{Explainability: Provenienz \& Why-Not (kompakt)}
+Mit \emph{K-Relationen} werden Tupel durch Elemente eines kommutativen Halbrings annotiert; die relationale Algebra (bzw.\ Datalog) hebt sich homomorph auf Annotationen \cite{green-provenance-semirings}. Ergebnis:
 \begin{itemize}
-  \item \textbf{How-Provenienz}: Polynome (z.\,B. \(t_1 t_2 + t_1 t_3\)) kodieren \emph{wie} Quellen kombiniert wurden.
-  \item \textbf{Why-Provenienz}: Zeugen(-basen) zeigen \emph{welche} Quelltupel genügen.
-  \item \textbf{Where-Provenienz}: Positionale Herkunft (Zell-/Attributebene) für Kopierursprünge.
-  \item \textbf{Rekursion}: Datalog-Provenienz via formale Potenzreihen und Fixpunkte.
+  \item \textbf{How-Provenienz}: Polynome kodieren, \emph{wie} Quellen kombiniert wurden.
+  \item \textbf{Why-Provenienz}: Zeugen(-basen) zeigen, \emph{welche} Quelltupel genügen.
+  \item \textbf{Where-Provenienz}: positionale Herkunft (Zell-/Attributebene).
 \end{itemize}
-
-\subsubsection{Warum-nicht-Erklärungen (fehlende Antworten)}
-Zwei Blickwinkel \cite{herschel-why-why-not,herschel-survey}:
-\begin{description}
-  \item[Instanzbasiert] (abduktiv): Welche minimalen Tupel/Updates würden das gewünschte Ergebnis erzeugen?
-  \item[Abfragebasiert] (operatorzentriert): Welche Operatoren/Prädikate schneiden kompatible Tupel ab?
-\end{description}
-Hybride Ansätze kombinieren beides (Operator als „Culprit“ \emph{und} minimale Datenänderung).
-
-\paragraph{Operative Empfehlungen.}
-\begin{itemize}
-  \item Provenienz für Ergebnis-Tupel \emph{materialisieren} oder on-the-fly rekonstruierbar halten (Kosten beachten).
-  \item Für Why-Not mindestens \emph{Top-Level-Filter} und verworfene Tripelmuster protokollieren.
-  \item Visualisierung: kompakte Summaries statt roher Graphen; Aggregation nach Operator/Quelle.
-\end{itemize}
+\textbf{Why-Not} (fehlende Antworten) lässt sich (i) \emph{instanzbasiert} (abduktiv: minimale Datenupdates, die die Antwort erzeugen) oder (ii) \emph{abfragebasiert} (operatorzentriert: welcher Operator/Filter schneidet ab) erklären; hybride Ansätze verbinden beides \cite{herschel-why-why-not,herschel-survey}. Operativ empfiehlt sich: Top-Level-Filter und verworfene Muster protokollieren; Visualisierung als kompakte Summaries statt roher Graphen.
 
 \subsection{OPTIONAL richtig einsetzen: wwd-SPARQL}
-OPTIONAL ermöglicht Teilantworten, ist aber in voller Allgemeinheit PSPACE-schwer. Das \emph{gut konzipierte} Fragment (wd) zügelt das, deckt die Praxis aber nur teilweise ab. \textbf{Schwach gut konzipierte} Muster (wwd) \emph{erweitern} wd und behalten coNP-Auswertbarkeit bei \cite{kaminski-kostylev-beyond-well-designed}:
+\texttt{OPTIONAL} ermöglicht Teilantworten, macht generelle Auswertung aber schwer. Das \emph{gut konzipierte} Fragment (wd) deckt die Praxis nur teilweise; \textbf{wwd} erweitert wd und behält \emph{coNP}-Auswertbarkeit \cite{kaminski-kostylev-beyond-well-designed}. Kernregeln:
 \begin{itemize}
-  \item Erlaube Variablen von rechten \texttt{OPT}-Seiten außerhalb des Untermusters nur, wenn deren Auftreten \emph{dominiert} (links) und Filter für solche Variablen nur auf \emph{oberster Ebene} stehen.
-  \item Normalform: \emph{OPT-FILTER-Normalform} (OF) und \emph{Constraint Pattern Trees} (CPT) machen Prioritäten explizit.
+  \item Variablen von rechten \texttt{OPT}-Seiten dürfen außerhalb nur auftreten, wenn ihr Auftreten \emph{dominiert} (links).
+  \item FILTER, die solche Variablen referenzieren, \emph{nur} auf oberster Ebene.
+  \item Normalformen \emph{OPT-FILTER-Normalform} (OF) und \emph{Constraint Pattern Trees} (CPT) machen Prioritäten explizit.
 \end{itemize}
-\textbf{Best Practices.}
-\begin{enumerate}
-  \item Links-assoziieren: \((P_1~\mathrm{OPT}~P_2)~\mathrm{OPT}~P_3\) statt \(P_1~\mathrm{OPT}~(P_2~\mathrm{OPT}~P_3)\).
-  \item FILTER, die Variablen aus rechten \texttt{OPT}s referenzieren, \emph{nur} auf oberster Ebene.
-  \item Denke in OF/CPT-Strukturen; vermeide (wo möglich) tiefe \texttt{OPT}-Nester.
-\end{enumerate}
+\textbf{Best Practices:} Links-assoziieren \((P_1\ \mathrm{OPT}\ P_2)\ \mathrm{OPT}\ P_3\) statt \(P_1\ \mathrm{OPT}\ (P_2\ \mathrm{OPT}\ P_3)\); tiefe \texttt{OPT}-Nester vermeiden; FILTER für rechte \texttt{OPT}-Variablen nur top-level.
 
-\subsection{Praktische Pipeline}
+\subsection{Mini-Playbook (praxisnah)}
 \begin{enumerate}
-  \item \textbf{Modellieren}: Klassen/Eigenschaften (RDFS/OWL) + SPIN-\texttt{constraint}s (Validierung) + optionale SPIN-\texttt{rule}s (Anreicherung).
-  \item \textbf{Validieren früh}: Formulare/ETL prüfen via \texttt{ASK}-Constraints; bei Verstößen \texttt{ConstraintViolation} mit \texttt{spin:fix}.
-  \item \textbf{Abfragen robust}: Abfrageentwurf in wwd-Form; OF-Normalisierung als Ziel.
-  \item \textbf{Erklären}: How/Why-Provenienz für Ergebnisse; Why-Not für fehlende Tupel (operator- und/oder instanzbasiert).
+  \item \textbf{Modellieren}: RDFS/OWL-Schema + SPIN-\texttt{constraint}s; optionale SPIN-\texttt{rule}s für Anreicherung.
+  \item \textbf{Früh validieren}: Formulare/ETL mit \texttt{ASK}-Constraints; Violations als \texttt{ConstraintViolation} mit \texttt{spin:fix}.
+  \item \textbf{Abfragen robust bauen}: wwd-Form als Ziel; OF/CPT prüfen.
+  \item \textbf{Erklärbarkeit sichern}: How/Why-Provenienz; Why-Not-Logs (Top-Level-Filter, verworfene Muster).
+  \item \textbf{Governance}: dereferenzierbare URIs für SPIN-Bibliotheken; Regeliteration begrenzen.
 \end{enumerate}
-
-\subsection{Checkliste}
-\begin{itemize}
-  \item \emph{Constraint-Abdeckung}: Pflichtfelder, Kardinalitäten, Datentypen, konsistente Rollen.
-  \item \emph{OPT-Disziplin}: Keine (Opt-R)-Verschachtelungen; Top-Level-FILTER.
-  \item \emph{Explainability-Artefakte}: Provenienzpolynome oder komprimierte Summaries; Protokolle für verworfene Bindungen.
-  \item \emph{Governance}: Dereferenzierbare URIs für SPIN-Bibliotheken; Regeliteration begrenzen.
-\end{itemize}
 
 \subsection{Grenzen und Ausblick}
-SPIN bringt Validierung \emph{ins Modell}, erfordert aber Disziplin (Terminierung, Updates). Wwd erlaubt praxisnahe OPTIONALs bei kontrollierter Komplexität; OF/CPT hilft beim Tuning, kann jedoch im Worst Case wachsen. Provenienz skaliert inhaltlich, aber nicht beliebig speicherseitig; visuelle Summarisierung bleibt ein Schlüsselthema \cite{herschel-survey}. Nächste Schritte: domänenspezifische SPIN-Bibliotheken, (halb-)automatische OF-Normalisierung, eingebettete Why-Not-Erklärung in Triple Stores.
+SPIN bringt Validierung \emph{ins Modell}, verlangt aber Disziplin (Terminierung/Updates). Wwd hält \texttt{OPTIONAL} praktikabel, OF/CPT kann jedoch wachsen. Provenienz skaliert fachlich, nicht beliebig speicherseitig; visuelle Summarisierung bleibt zentral \cite{herschel-survey}. Nächste Schritte: domänenspezifische SPIN-Bibliotheken, (halb-)automatische OF-Normalisierung, eingebettete Why-Not-Erklärungen in Triple Stores.
+
 
 
 
@@ -666,87 +467,66 @@ SPIN bringt Validierung \emph{ins Modell}, erfordert aber Disziplin (Terminierun
 \section{Datenschutz und Anonymisierung in SPARQL-Operationen}
 \label{sec:privacy}
 
-Dieses Kapitel behandelt Strategien, Modelle und konkrete Mechanismen, um Datenschutz in SPARQL-basierten Systemen (RDF-Speicher, Linked-Data-APIs, Query-Logs) systematisch umzusetzen. Wir beginnen mit rechtlich-konzeptionellen Grundlagen, leiten daraus Angreifermodelle und Schutzziele ab und entwickeln darauf aufbauend technische Maßnahmen: Zugriffskontrolle für RDF/ SPARQL, Pseudonymisierung, Anonymisierung robuster RDF-Graphen, differentielle Privatsphäre (inkl.\ ihres Einsatzes für SPARQL-Antworten und Query-Logs), k-Anonymität via Mikroaggregation sowie betriebliche Leitlinien für Fuseki/Jena. Die Ausgestaltung folgt den W3C \emph{Data on the Web Best Practices} und dem W3C \emph{Data Privacy Vocabulary}.
+Dieses Kapitel bündelt Rechtsgrundlagen, Angreifermodelle und technische Maßnahmen für Datenschutz in SPARQL-basierten Systemen (RDF-Speicher, Linked-Data-APIs, Query-Logs). Im Fokus: Zugriffskontrolle, Pseudonymisierung/Anonymisierung von RDF-Graphen, differentielle Privatsphäre (für Antworten \emph{und} Logs), k-Anonymität via Mikroaggregation sowie Betriebsleitlinien (Fuseki/Jena) entlang der W3C \emph{Data on the Web Best Practices} und des \emph{Data Privacy Vocabulary}.
 
 \subsection{Grundlagen: Rechtsrahmen und Begriffe}
-\textbf{Rechtsmaßstab.} Nach EU-DSGVO ist \emph{Anonymisierung} ein irreversibler Prozess; \emph{Pseudonymisierung} reduziert Identifizierbarkeit, bleibt aber personenbezogen. Der Artikel-29-Arbeitskreis betont drei Prüfsteine: \emph{Singling-out}, \emph{Linkability} und \emph{Inference} (schlussfolgernde Offenlegung). Maßnahmen sind nur dann hinreichend, wenn alle drei Risiken angemessen gemindert werden \cite{Art29WPAnonymisation, enisa2019pseudonymisation}.
-
-\textbf{Privacy-by-Design für Webdaten.} W3C \emph{Privacy Principles} fordern Zweckbindung, Datenminimierung, Sicherheit, Transparenz/ Wahlmöglichkeiten und Verantwortlichkeit \cite{W3CPrivacyPrinciples}. Das W3C \emph{Data Privacy Vocabulary} (DPV) liefert Begriffe zur konsistenten Dokumentation von Zwecken, Rechtsgrundlagen, Empfängern, Speicherfristen u.\,a.\ als Metadaten \cite{W3CDPV}. Veröffentlichungs- und Betriebsprozesse sollen den \emph{Data on the Web Best Practices} folgen (Metadaten, Provenienz, Versionierung, Mehrformatauslieferung, Feedback) \cite{W3CDWBP}.
+\textbf{Rechtsmaßstab.} Nach EU-DSGVO ist \emph{Anonymisierung} irreversibel; \emph{Pseudonymisierung} reduziert Identifizierbarkeit, bleibt aber personenbezogen. Der Art.-29-APK prüft \emph{Singling-out}, \emph{Linkability}, \emph{Inference} \cite{Art29WPAnonymisation,enisa2019pseudonymisation}. \\
+\textbf{Privacy-by-Design.} W3C \emph{Privacy Principles} fordern Zweckbindung, Datenminimierung, Sicherheit, Transparenz/Wahlmöglichkeiten, Verantwortlichkeit \cite{W3CPrivacyPrinciples}. DPV beschreibt Zwecke, Rechtsgrundlagen, Empfänger, Speicherfristen als maschinenlesbare Metadaten \cite{W3CDPV}; Veröffentlichungen folgen W3C DWBP (Provenienz, Versionierung, Mehrformate, Feedback) \cite{W3CDWBP}.
 
 \subsection{Angreifermodelle und Schutzziele}
-\textbf{Angreifer.} (i) Passiv: nutzt offen zugängliche SPARQL-Endpunkte und Dumps; (ii) Aktiv: injiziert Abfragen/ Daten zur späteren Re-Identifikation (Sybil/ Poisoning); (iii) Verknüpfer: kombiniert externe Quellen (Linkage). \textbf{Schutzziele:} (a) Verhindern eindeutiger Re-Identifikationen (\emph{singling-out}), (b) Minimieren von Linkage-Erfolg, (c) Begrenzen von Inferenz über sensible Attribute, (d) Verfügbarkeit und Nützlichkeit der Daten für legitime Zwecke.
+\textbf{Angreifer:} (i) passiv (öffentl.\ Endpunkte/Dumps), (ii) aktiv (Injektion/Sybil/Poisoning), (iii) Verknüpfer (externe Linkage). \textbf{Schutzziele:} (a) Re-Identifikation verhindern, (b) Linkage-Risiko senken, (c) Inferenz über sensible Attribute begrenzen, (d) Verfügbarkeit/Nutzwert erhalten.
 
 \subsection{Zugriffskontrolle als Grundschutz (AuthN/AuthZ)}
-\textbf{Serverseitig.} Apache Fuseki unterstützt HTTPS, Benutzer/Passwort (Basic/Digest nur über TLS), ACLs auf Server-, Datensatz-, Endpunkt- und (read-only) Graph-Ebene; der Union-Graph und der Default-Graph sind steuerbar \cite{FusekiAccess}. \textbf{In-Graph-Policies.} \emph{Jena Permissions} kapselt Graph/Model-APIs mittels dynamischer Proxys und erzwingt CRUD-Entscheidungen pro Principal auf Graph- und optional Triple-Ebene via \texttt{SecurityEvaluator} (inkl.\ Caching) \cite{JenaPermissions}. 
-\textbf{Designhinweise.} (1) TLS mit vertrauenswürdigen Zertifikaten; (2) Least-Privilege-ACLs; (3) Trennung von \emph{privaten Rohdaten} und \emph{publiken Derivaten}; (4) Audit-Logging.
+\textbf{Serverseitig.} Apache Fuseki: HTTPS, Basic/Digest (nur über TLS), ACLs auf Server-/Datensatz-/Endpunkt- und (read-only) Graph-Ebene; Steuerung von Default-/Union-Graph \cite{FusekiAccess}. \\
+\textbf{In-Graph-Policies.} \emph{Jena Permissions} erzwingt CRUD-Entscheidungen pro Principal (Graph, optional Triple) via \texttt{SecurityEvaluator}, inkl.\ Caching \cite{JenaPermissions}. \\
+\textbf{Praxis:} TLS mit vertrauenswürdigen Zertifikaten, Least-Privilege-ACLs, Trennung \emph{Rohdaten} vs.\ \emph{publike Derivate}, Audit-Logging.
 
-\subsection{Pseudonymisierung versus Anonymisierung}
-\textbf{Pseudonymisierung.} Tokenisierung/Hashing von IDs oder Query-Tokens ist gegen Frequenz- und Kontextangriffe schwach; robustere Varianten benötigen Salts, Schlüsselrotation und Kontext-Verdrillung. \textbf{Anonymisierung.} Für Veröffentlichungen (Dumps, häufige Items) sind formale Verfahren notwendig: differentielle Privatsphäre oder strikte k-Anonymität (mit bekannten Grenzen).
+\subsection{Pseudonymisierung vs.\ Anonymisierung}
+\textbf{Pseudonymisierung.} Reines Tokenisieren/Hashen von IDs/Query-Tokens ist anfällig (Frequenz/Kontext); robust: Salt, Schlüsselrotation, Kontext-Verdrillung. \\
+\textbf{Anonymisierung.} Für Veröffentlichungen sind formale Verfahren nötig: differentielle Privatsphäre (DP) oder strikte k-Anonymität (mit bekannten Grenzen).
 
 \subsection{Anonymisierung von RDF-Graphen}
-\textbf{Strukturelle Risiken.} RDF-Graphen sind über Identifikatoren und Topologie verknüpfbar; Linkage-Angriffe nutzen Hintergrundwissen über Muster, Attributdomänen oder externe Datensätze. Arbeiten zu robusten RDF-Anonymisierungen und den logischen Grundlagen privacy-wahrender Linked-Data-Publikation analysieren, wann Generalisierung/Suppression hinreicht und welche Beschränkungen nötig sind \cite{delanaux-linkage, logical-foundations-lda}. 
-\textbf{Praktische Optionen.} (i) Identifier-Generalisierung/ Zufalls-IRIs für lokale Ressourcen; (ii) Attribut-Binning und Hierarchisierung; (iii) Topologie-Vergröberung (Entität zu Typ/ Superklasse); (iv) strikte Provenienz: dokumentiere alle Transformationen (PROV-O).
+\textbf{Risiken.} RDF ist über Identifikatoren und Topologie linkbar; Linkage nutzt Muster, Attributdomänen, externe Datensätze \cite{delanaux-linkage,logical-foundations-lda}. \\
+\textbf{Optionen.} (i) Zufalls-/generaliserte IRIs für lokale Ressourcen, (ii) Attribut-Binning/Hierarchien, (iii) Topologie-Vergröberung (Entität$\rightarrow$Typ/Superklasse), (iv) strikte Provenienz (PROV-O) der Transformationen.
 
 \subsection{Differential Privacy (DP) für SPARQL}
-\subsection{Definitionen}
-Ein (randomisierter) Mechanismus $A$ ist $\varepsilon$-DP, wenn für alle benachbarten Datensätze $D,D'$ und Ausgaben $O$ gilt:
+\textbf{Definition.} Ein Mechanismus $A$ ist $\varepsilon$-DP, wenn für benachbarte Datensätze $D,D'$ und Ausgaben $O$ gilt:
 \[
-\Pr[A(D)=O]\le e^{\varepsilon}\Pr[A(D')=O].
+  \Pr\!\big[A(D)=O\big] \le e^{\varepsilon}\,\Pr\!\big[A(D')=O\big].
 \]
-Schwächungen: $(\varepsilon,\delta)$-DP (Ununterscheidbarkeit) sowie \emph{probabilistic DP}, die mit Wahrscheinlichkeit $\ge 1-\delta$ strikte $\varepsilon$-DP garantiert \cite{GoetzZealous}.
 
-\subsubsection{SPARQL-spezifische Aspekte}
-SPARQL umfasst Auswahl, Projektion, Joins, Aggregation und Konstruktion. DP ist unmittelbar einsetzbar für aggregierende, monotone Anfragen (\texttt{COUNT}, \texttt{SUM} über gebundene Domänen) mit bekannter globaler Sensitivität; für frei kombinierte \texttt{OPTIONAL}/\texttt{FILTER}-Muster steigen Sensitivität und Analyseaufwand. Arbeiten zu \emph{Differential Privacy and SPARQL} diskutieren fragmentierte Anfragesprachen, Budgetierung und Rauschen (Laplace/Geometrisch) an Antwort- oder Operator-Kanten \cite{builaranda-dp-sparql}. 
-\textbf{Praxisleitfaden.} 
-(a) \emph{Fragment}: Aggregations-Untermenge mit statisch beschränkter Kardinalität zulassen; 
-(b) \emph{Per-User Contribution Capping}: je Benutzer max.\ $m$ Beiträge; 
-(c) \emph{Budget}: $\varepsilon$ sitzungsweise; Komposition beachten; 
-(d) \emph{Post-Processing}: Negativwerte truncaten, Seltenes filtern.
+Schwächungen: $(\varepsilon,\delta)$-DP und \emph{probabilistic DP} (mit Wkt.\ $\ge1-\delta$) \cite{GoetzZealous}. \\
+\textbf{SPARQL-spezifisch.} Direkt anwendbar auf monotone Aggregationen (\texttt{COUNT}/\texttt{SUM} mit begrenzter Sensitivität); frei kombinierte \texttt{OPTIONAL}/\texttt{FILTER}-Muster erhöhen Sensitivität und Analyseaufwand \cite{builaranda-dp-sparql}. \\
+\textbf{Praxisleitfaden.} (a) Aggregations-\emph{Fragment} mit statischer Kardinalitätsgrenze, (b) \emph{Per-User Contribution Capping} ($\le m$ Beiträge/Nutzer), (c) Sitzungsbudget $\varepsilon$ (Komposition beachten), (d) Post-Processing (Negativwerte truncaten, Seltenes filtern). \\
+\textbf{Mechaniken am Endpunkt.} (1) Antwort-Perturbation (Laplace/Geometrisch) mit Konfidenzintervallen; (2) Schema-Perturbation (verrauschte Histogramme); (3) Query Auditing/Refusal bei zu hoher Sensitivität.
 
-\subsubsection{DP-Mechanismen für Endpunkte}
-\begin{itemize}
-  \item \textbf{Antwort-Perturbation}: Addiere Laplace/Geometrisches Rauschen zu \texttt{COUNT}/\texttt{SUM}; reportiere Konfidenzintervalle.
-  \item \textbf{Schema-Perturbation}: Verrausche Histogramme (Häufigkeiten von IRIs/ Literalen) und beantworte Anfragen aus diesen Strukturen.
-  \item \textbf{Query Auditing/Refusal}: Lehne Anfragen ab, deren geschätzte Sensitivität die Budgetgrenze sprengt.
-\end{itemize}
-
-\subsection{Anonymisierung von Query-Logs und häufigen Items}
-Strikte $\varepsilon$-DP ist für Such/Query-Logs oft nutzwertarm; k-Anonymität ist gegen \emph{aktive} Angriffe fragil (Injektion von $k\!-\!1$ Ködern). \textbf{ZEALOUS} bietet einen Mittelweg: Beiträge pro Nutzer auf $m$ begrenzen, Vorfilter $\tau$, Laplace-Rauschen, Nachfilter $\tau'$ und Veröffentlichung nur der (verrauschten) häufigen Items. Damit lässt sich $(\varepsilon,\delta)$-\emph{probabilistic DP} und in Varianten $(\varepsilon,\delta)$-Ununterscheidbarkeit erreichen \cite{GoetzZealous}. 
-\paragraph{Parameterwahl (Praxis).} Fixiere $\delta$ (z.\,B.\ 0{,}001), wähle $\varepsilon\in[0{,}5,2]$, setze $\tau=\lceil 2m/\varepsilon\rceil$ zur Minimierung von $\tau'$, und wähle $m$ \emph{unterhalb} der durchschnittlichen Nutzerbeiträge (Abdeckung vs.\ Präzision). 
-\paragraph{Nutzwertmetriken.} Top\,$J$-Abdeckung (Recall) und L1/KL-Abstand der relativen Häufigkeiten; häufige Items erhalten gute Präzision, seltene werden eliminiert.
-
-\subsection{k-Anonymität mittels Mikroaggregation (User-Level)}
-Für nutzerzentrierte Mining-Aufgaben kann Mikroaggregation echte k-Anonymität auf \emph{Benutzer-Ebene} schaffen: Nutzer werden als Query-Bäume durch Distanzmetriken (Zeit, Rang, Domain-Ähnlichkeit, Levenshtein/Hausdorff über Termmengen) geclustert; anschließend ersetzt der Cluster-\emph{Schwerpunkt} die Individualdaten (\emph{Partition} $\Rightarrow$ \emph{Aggregation}). So wird Re-Identifikation auf $1/k$ begrenzt, bei kontrolliertem Informationsverlust \cite{NavarroUserKAnon}. Einschränkung: syntaktisch (keine Begriffsemantik), aktiv angreifbare Konstellationen bleiben möglich (vgl.\ Inferenz/ Linkage).
-
-\subsection{Online-Streaming: Schwellen-Kryptografie für eindeutige Abfragen}
-Um den \emph{Long Tail} eindeutiger/ seltener Abfragen online zu entschärfen, kann Secret-Sharing/ Threshold-Kryptografie eingesetzt werden: Abfragen werden in Shares zerlegt und erst ab Schwellwert $t$ (verschiedene Nutzer) rekonstruierbar. Alternative: Sitzungs-Splitting nach Interessensdomänen zur Reduktion rekonstruierbarer Verläufe \cite{AdarQueryLogs}. Diese Mechaniken sind für Streaming-Pipelines nützlich, mindern aber Korrelationen/ Feinkörnigkeit.
+\subsection{Logs \& Nutzungsspuren: ZEALOUS, Mikroaggregation, Streaming}
+\textbf{ZEALOUS (häufige Items).} Mittelweg zwischen strikter DP (oft zu restriktiv) und k-Anonymität (angreifbar): Beiträge pro Nutzer auf $m$ deckeln, Vorfilter $\tau$, Laplace-Rauschen, Nachfilter $\tau'$, nur verrauschte Top-Items veröffentlichen $\Rightarrow$ $(\varepsilon,\delta)$-\emph{probabilistic DP}/Ununterscheidbarkeit \cite{GoetzZealous}. \emph{Parameter:} fixiere $\delta$ (z.\,B.\ 0{,}001), wähle $\varepsilon\in[0{,}5,2]$, setze $\tau=\lceil2m/\varepsilon\rceil$, wähle $m$ unterhalb des Durchschnitts. \emph{Nutzwert:} Recall der Top-$J$ und L1/KL-Abstand. \\
+\textbf{k-Anonymität via Mikroaggregation (User-Level).} Nutzer-Query-Bäume clustern (Zeit, Rang, Domain-Ähnlichkeit, Edit-/Hausdorff-Distanzen), Cluster-Schwerpunkt ersetzt Individualdaten $\Rightarrow$ Re-Identifikation $\le 1/k$ bei kontrolliertem Informationsverlust \cite{NavarroUserKAnon}. Grenzen: syntaktisch, gegen aktive Angriffe verwundbar. \\
+\textbf{Online-Streaming.} Threshold-Kryptografie/Secret-Sharing: Rekonstruktion erst ab Schwellwert $t$ verschiedener Nutzer; alternativ Sitzungs-Splitting nach Interessensdomänen \cite{AdarQueryLogs}.
 
 \subsection{Betriebsarchitektur für SPARQL mit Datenschutz}
 \label{sec:privacy-governance}
-\textbf{Schichtenmodell.}
-\begin{enumerate}
-  \item \emph{Ingest \& Private Zone}: Rohdaten/Logs, Zugriff streng begrenzt (Fuseki ACLs, Jena Permissions).
-  \item \emph{Anonymisierungs-Layer}: (i) DP-Antworten für Endpunkt-Aggregation; (ii) ZEALOUS für häufige Items; (iii) Mikroaggregierte Nutzeransichten hinter stärkeren Policies.
-  \item \emph{Publikations-Zone}: read-only Datensätze/Graphen, TLS, AuthN, Graph-ACLs; Metadaten mit DCAT, DPV, PROV-O; Bulk-Dump + API.
-\end{enumerate}
-\textbf{Rate-Limit/ Budget.} Anfrage-Budgetierung pro Principal (DP-Budget $\varepsilon$), Throttling, Captcha/ Bot-Schutz; Ablehnung hochsensitiver Anfragen. 
-\textbf{Provenienz und Versionierung.} Jede Veröffentlichung enthält \emph{maschinell} (PROV-O, DQV) dokumentierte Parameter ($\varepsilon,\delta,m,\tau,\tau'$), Datenbasis (Zeit/Scope), Qualität und Lizenz; persistente URIs für „neueste“ vs.\ datierte Version (Memento-fähig) \cite{W3CDWBP}.
+\textbf{Schichten.} (1) \emph{Ingest/Private Zone}: Rohdaten/Logs, strenge ACLs (Fuseki), Jena Permissions. (2) \emph{Anonymisierungs-Layer}: DP-Aggregationen, ZEALOUS für häufige Items, mikroaggregierte Nutzeransichten (stärkere Policies). (3) \emph{Publikations-Zone}: read-only Datensätze, TLS, AuthN, Graph-ACLs; DCAT/DPV/PROV-O; Bulk-Dumps + API. \\
+\textbf{Rate-Limit/Budget.} Pro Principal: Throttling, Captcha/Bot-Schutz, DP-Budget $\varepsilon$; Ablehnung hochsensitiver Anfragen. \\
+\textbf{Versionierung/Provenienz.} Veröffentlichungen dokumentieren ($\varepsilon,\delta,m,\tau,\tau'$), Datenbasis (Zeit/Scope), Qualität, Lizenz; persistente URIs für „neueste“ vs.\ datierte Version (Memento) \cite{W3CDWBP}.
 
-\subsection{Leitlinien \& Checkliste}
+\subsection{Leitlinien \& Checkliste (kompakt)}
 \begin{itemize}
-  \item \textbf{Minimalprinzip:} Daten und Antworten so grob wie möglich, so fein wie nötig.
-  \item \textbf{SPARQL-Fragment:} Aggregations-Teilmenge mit statischer Sensitivitätsgrenze; keine Volltext-Lecks (\texttt{STRSTARTS}/\texttt{CONTAINS} nur auf whitelisted Feldern).
-  \item \textbf{DP für Aggregation:} Antwort-Rauschen + Budget + Per-User-Capping.
-  \item \textbf{Logs:} Für Trendanalysen ZEALOUS; für Nutzer-Clustering Mikroaggregation.
-  \item \textbf{Betrieb:} TLS, AuthN, Graph/Triple-Policies, Audit; Abuse-Schutz (Rate-Limits, Retry-Delays).
+  \item \textbf{Minimalprinzip:} so grob wie möglich, so fein wie nötig.
+  \item \textbf{SPARQL-Fragment:} nur Aggregations-Untermenge mit begrenzter Sensitivität; Volltext nur auf Whitelist-Feldern.
+  \item \textbf{DP für Aggregation:} Rauschen + Budget + per-user Capping.
+  \item \textbf{Logs:} ZEALOUS für Trends; Mikroaggregation für nutzerzentrierte Analysen.
+  \item \textbf{Betrieb:} TLS, AuthN, Graph/Triple-Policies, Audit; Rate-Limits/Retry-Delays.
   \item \textbf{Publikation:} DCAT/DPV/PROV-Metadaten, Lizenz, Version, Bulk+API, Feedbackkanal.
 \end{itemize}
 
 \subsection{Grenzen und Forschungslücken}
-DP in voll allgemeinem SPARQL (mit optionalen Mustern, Rekursion, Konstruktion) ist offen; robuste RDF-Anonymisierung gegen starke Linkage-Gegner bleibt schwierig. Semantische Ähnlichkeiten (statt reiner Edit-Distanzen) könnten Mikroaggregation verbessern; gleichzeitig erhöht sich der Angriffsraum. Für produktive Endpunkte ist die Kombination aus starkem Grundschutz (AuthN/Z), restriktivem SPARQL-Fragment, DP-Aggregationen und anonymisierten Veröffentlichungen derzeit der praktikable Kompromiss.
+DP für allgemeines SPARQL (OPTIONAL, Rekursion, CONSTRUCT) bleibt offen; robuste RDF-Anonymisierung gegen starke Linkage-Gegner ist schwierig. Semantische Ähnlichkeiten statt reiner Edit-Distanzen könnten Mikroaggregation verbessern—mit erweitertem Angriffsraum. Praktisch bewährt sich die Kombination aus starkem Grundschutz (AuthN/Z), restriktivem SPARQL-Fragment, DP-Aggregationen und anonymisierten Veröffentlichungen.
 
 \medskip
-\noindent\textbf{Kernaussage.} K-Anonymität allein genügt nicht; strikte $\varepsilon$-DP ist oft zu restriktiv. In der Praxis bewährt sich ein \emph{Policy + Mechanism}-Ansatz: starke Zugriffskontrolle, formal begründete Anonymisierung (ZEALOUS/DP) für häufige Items und (wo nötig) k-anonyme Nutzerprofile via Mikroaggregation, flankiert von sauberer Publikations-Governance (W3C-BPs, DPV, PROV).
+\noindent\textbf{Kernaussage.} K-Anonymität allein genügt nicht; strikte $\varepsilon$-DP ist oft zu restriktiv. In der Praxis trägt ein \emph{Policy+Mechanism}-Ansatz: starke Zugriffskontrolle, formal begründete Anonymisierung (ZEALOUS/DP) für häufige Items und—wo nötig—k-anonyme Nutzerprofile via Mikroaggregation, flankiert von sauberer Publikations-Governance (W3C-BPs, DPV, PROV).
+
 
 
 

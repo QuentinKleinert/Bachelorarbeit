@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1a365d" /></marker></defs>
+<rect x="40.0" y="40.0" width="320.0" height="240.0" rx="12.0" ry="12.0" fill="#e6f0ff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="200.0" y="70.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Client &amp; UI</tspan>
+</text>
+<rect x="380.0" y="40.0" width="420.0" height="640.0" rx="12.0" ry="12.0" fill="#edf2f7" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="590.0" y="70.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="590.0" dy="0.0">FastAPI Backend</tspan>
+</text>
+<rect x="820.0" y="40.0" width="340.0" height="240.0" rx="12.0" ry="12.0" fill="#ffeae6" stroke="#c53030" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="70.0" font-size="20" font-weight="600" fill="#742a2a" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">External Services</tspan>
+</text>
+<rect x="40.0" y="320.0" width="320.0" height="360.0" rx="12.0" ry="12.0" fill="#fefcbf" stroke="#b7791f" stroke-width="1.20" opacity="1.00" />
+<text x="200.0" y="350.0" font-size="20" font-weight="600" fill="#744210" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Observability &amp; Safety</tspan>
+</text>
+<rect x="820.0" y="320.0" width="340.0" height="360.0" rx="12.0" ry="12.0" fill="#e6fffa" stroke="#2c7a7b" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="350.0" font-size="20" font-weight="600" fill="#285e61" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">Persistent Stores</tspan>
+</text>
+<rect x="80.0" y="110.0" width="240.0" height="120.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="200.0" y="140.0" font-size="16" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">React UI (Vite + Tailwind)</tspan>
+<tspan x="200.0" dy="20.0">- Drafts &amp; token-aware preview</tspan>
+<tspan x="200.0" dy="20.0">- Explainability &amp; history view</tspan>
+</text>
+<rect x="420.0" y="110.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="500.0" y="136.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Routing &amp; Security</tspan>
+</text>
+<text x="500.0" y="162.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">FastAPI routers</tspan>
+<tspan x="500.0" dy="15.6">API-Token &amp; Rate limiting</tspan>
+</text>
+<rect x="420.0" y="210.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="500.0" y="236.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Preview Token Store</tspan>
+</text>
+<text x="500.0" y="262.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">In-memory confirm tokens</tspan>
+<tspan x="500.0" dy="15.6">600 s TTL, invalidiert bei Aenderungen</tspan>
+</text>
+<rect x="420.0" y="310.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="500.0" y="336.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Validator</tspan>
+</text>
+<text x="500.0" y="362.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Ontologie-Cache</tspan>
+<tspan x="500.0" dy="15.6">URI-Checks, Warnungen</tspan>
+</text>
+<rect x="420.0" y="420.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="500.0" y="446.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Explainability</tspan>
+</text>
+<text x="500.0" y="472.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Semantische Zusammenfassung</tspan>
+<tspan x="500.0" dy="15.6">betroffene Praedikate</tspan>
+</text>
+<rect x="420.0" y="530.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="500.0" y="556.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">Pseudonymizer</tspan>
+</text>
+<text x="500.0" y="582.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="500.0" dy="0.0">HMAC-Maskierung</tspan>
+<tspan x="500.0" dy="15.6">URI-Rewrites fuer Logs</tspan>
+</text>
+<rect x="640.0" y="150.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="720.0" y="176.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">LLM Service</tspan>
+</text>
+<text x="720.0" y="202.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">Guardrailed Prompts</tspan>
+<tspan x="720.0" dy="15.6">OpenAI GPT-4.1-mini</tspan>
+</text>
+<rect x="640.0" y="270.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="720.0" y="296.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">SPARQL Client</tspan>
+</text>
+<text x="720.0" y="322.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">HTTP zu Fuseki</tspan>
+<tspan x="720.0" dy="15.6">Changes Graph fuer Undo</tspan>
+</text>
+<rect x="640.0" y="390.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="720.0" y="416.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">Metrics Exporter</tspan>
+</text>
+<text x="720.0" y="442.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">Prometheus-Latenzen</tspan>
+<tspan x="720.0" dy="15.6">Top API Pfade</tspan>
+</text>
+<rect x="640.0" y="510.0" width="160.0" height="90.0" rx="8.0" ry="8.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="720.0" y="536.0" font-size="15" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">Change Logger</tspan>
+</text>
+<text x="720.0" y="562.0" font-size="13" font-weight="normal" fill="#2a4365" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="720.0" dy="0.0">JSONL Audit Trail</tspan>
+<tspan x="720.0" dy="15.6">Undo Payloads</tspan>
+</text>
+<rect x="860.0" y="110.0" width="260.0" height="120.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#c53030" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="150.0" font-size="16" font-weight="normal" fill="#742a2a" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">OpenAI LLM API</tspan>
+<tspan x="990.0" dy="20.0">Guardrails &amp; Retry</tspan>
+</text>
+<rect x="860.0" y="250.0" width="260.0" height="120.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#c53030" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="290.0" font-size="16" font-weight="normal" fill="#742a2a" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">Apache Jena Fuseki</tspan>
+<tspan x="990.0" dy="20.0">Dataset `combined`</tspan>
+<tspan x="990.0" dy="20.0">Changes Graph</tspan>
+</text>
+<rect x="80.0" y="380.0" width="240.0" height="80.0" rx="10.0" ry="10.0" fill="#ffffff" stroke="#b7791f" stroke-width="1.20" opacity="1.00" />
+<text x="200.0" y="406.0" font-size="15" font-weight="600" fill="#744210" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Explainability Panel</tspan>
+</text>
+<text x="200.0" y="428.0" font-size="13" font-weight="normal" fill="#975a16" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">LLM Summary pro Request</tspan>
+<tspan x="200.0" dy="15.6">Praedikate &amp; Diff</tspan>
+</text>
+<rect x="80.0" y="470.0" width="240.0" height="80.0" rx="10.0" ry="10.0" fill="#ffffff" stroke="#b7791f" stroke-width="1.20" opacity="1.00" />
+<text x="200.0" y="496.0" font-size="15" font-weight="600" fill="#744210" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Undo History</tspan>
+</text>
+<text x="200.0" y="518.0" font-size="13" font-weight="normal" fill="#975a16" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Undo Tokens</tspan>
+<tspan x="200.0" dy="15.6">Changes Graph Viewer</tspan>
+</text>
+<rect x="80.0" y="560.0" width="240.0" height="80.0" rx="10.0" ry="10.0" fill="#ffffff" stroke="#b7791f" stroke-width="1.20" opacity="1.00" />
+<text x="200.0" y="586.0" font-size="15" font-weight="600" fill="#744210" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Preview -&gt; Execute</tspan>
+</text>
+<text x="200.0" y="608.0" font-size="13" font-weight="normal" fill="#975a16" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="200.0" dy="0.0">Token-Gating</tspan>
+<tspan x="200.0" dy="15.6">Live TTL Feedback</tspan>
+</text>
+<rect x="860.0" y="380.0" width="260.0" height="120.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c7a7b" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="420.0" font-size="16" font-weight="normal" fill="#285e61" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">JSONL Change Log</tspan>
+<tspan x="990.0" dy="20.0">Maskierte Literale, Undo</tspan>
+</text>
+<rect x="860.0" y="520.0" width="260.0" height="120.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c7a7b" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="560.0" font-size="16" font-weight="normal" fill="#285e61" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">Prometheus Metrics</tspan>
+<tspan x="990.0" dy="20.0">HTTP vs Fuseki</tspan>
+</text>
+<line x1="320.0" y1="170.0" x2="420.0" y2="170.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="370.0" y="162.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="370.0" dy="0.0">REST /api</tspan>
+</text>
+<line x1="580.0" y1="200.0" x2="640.0" y2="200.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="610.0" y="186.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="610.0" dy="0.0">LLM Request</tspan>
+</text>
+<line x1="800.0" y1="200.0" x2="860.0" y2="200.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<line x1="800.0" y1="310.0" x2="860.0" y2="310.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="830.0" y="296.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="830.0" dy="0.0">SPARQL over HTTP</tspan>
+</text>
+<line x1="720.0" y1="555.0" x2="860.0" y2="440.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="790.0" y="481.5" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="790.0" dy="0.0">Maskierte Audits</tspan>
+</text>
+<line x1="720.0" y1="575.0" x2="860.0" y2="580.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="790.0" y="565.5" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="790.0" dy="0.0">Prom Metriken</tspan>
+</text>
+<line x1="320.0" y1="500.0" x2="420.0" y2="340.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="370.0" y="408.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="370.0" dy="0.0">Validierungsfeedback</tspan>
+</text>
+<line x1="320.0" y1="430.0" x2="420.0" y2="330.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="370.0" y="368.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="370.0" dy="0.0">Explain Summaries</tspan>
+</text>
+<line x1="320.0" y1="590.0" x2="420.0" y2="240.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="370.0" y="403.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="370.0" dy="0.0">Confirm Tokens</tspan>
+</text>
+<line x1="720.0" y1="470.0" x2="880.0" y2="470.0" stroke="#4a5568" stroke-width="1.20" marker-end="url(#arrowhead)" stroke-dasharray="6 6" />
+<text x="800.0" y="450.0" font-size="13" font-weight="normal" fill="#2c7a7b" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="800.0" dy="0.0">Undo Payload persistiert</tspan>
+</text>
+</svg>

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="720" viewBox="0 0 1180 720">
+<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1a365d" /></marker></defs>
+<rect x="60.0" y="60.0" width="240.0" height="580.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="180.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="180.0" dy="0.0">Backend</tspan>
+</text>
+<rect x="340.0" y="60.0" width="240.0" height="580.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="460.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="460.0" dy="0.0">Pseudonymizer</tspan>
+</text>
+<rect x="620.0" y="60.0" width="240.0" height="580.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="740.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="740.0" dy="0.0">Log-Datei</tspan>
+</text>
+<rect x="900.0" y="60.0" width="240.0" height="580.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="1020.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="1020.0" dy="0.0">UI / Review</tspan>
+</text>
+<rect x="60.0" y="120.0" width="240.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="180.0" y="160.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="180.0" dy="0.0">Execute-Request</tspan>
+<tspan x="180.0" dy="17.5">SPARQL + Undo</tspan>
+</text>
+<line x1="180.0" y1="200.0" x2="460.0" y2="240.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="320.0" y="204.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="320.0" dy="0.0">mask_sparql_for_log</tspan>
+</text>
+<rect x="340.0" y="240.0" width="240.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="460.0" y="280.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="460.0" dy="0.0">HMAC-Literals</tspan>
+<tspan x="460.0" dy="17.5">URI Pseudonyme</tspan>
+</text>
+<line x1="460.0" y1="320.0" x2="740.0" y2="360.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="600.0" y="324.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="600.0" dy="0.0">mask_log_record</tspan>
+</text>
+<rect x="620.0" y="360.0" width="240.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="740.0" y="400.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="740.0" dy="0.0">Append JSONL</tspan>
+<tspan x="740.0" dy="17.5">changes.jsonl</tspan>
+</text>
+<line x1="1020.0" y1="480.0" x2="740.0" y2="440.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="880.0" y="442.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="880.0" dy="0.0">GET /logs/recent</tspan>
+</text>
+<rect x="620.0" y="460.0" width="240.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="740.0" y="500.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="740.0" dy="0.0">Log liefert Masken</tspan>
+</text>
+<line x1="740.0" y1="520.0" x2="180.0" y2="540.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="460.0" y="512.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="460.0" dy="0.0">mask_log_record erneut</tspan>
+</text>
+<rect x="60.0" y="520.0" width="240.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="180.0" y="560.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="180.0" dy="0.0">Rate Limit, erneute Maskierung</tspan>
+</text>
+<line x1="180.0" y1="580.0" x2="1020.0" y2="600.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="600.0" y="572.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="600.0" dy="0.0">Anonymisierte Anzeige</tspan>
+</text>
+<rect x="900.0" y="580.0" width="240.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="1020.0" y="620.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="1020.0" dy="0.0">UI zeigt Masken, Undo-Link</tspan>
+</text>
+</svg>

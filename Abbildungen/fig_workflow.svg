@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="840" viewBox="0 0 1200 840">
+<defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#1a365d" /></marker></defs>
+<rect x="60.0" y="60.0" width="340.0" height="700.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="230.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="230.0" dy="0.0">Client / UI</tspan>
+</text>
+<rect x="440.0" y="60.0" width="340.0" height="700.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="610.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="610.0" dy="0.0">FastAPI Backend</tspan>
+</text>
+<rect x="820.0" y="60.0" width="340.0" height="700.0" rx="16.0" ry="16.0" fill="#f7fafc" stroke="#cbd5f5" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="90.0" font-size="20" font-weight="600" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">Fuseki &amp; Storage</tspan>
+</text>
+<rect x="90.0" y="140.0" width="280.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="230.0" y="180.0" font-size="16" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="230.0" dy="0.0">1. NL-Eingabe im Editor</tspan>
+</text>
+<line x1="230.0" y1="220.0" x2="610.0" y2="260.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="222.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">POST /nl2sparql/generate</tspan>
+</text>
+<rect x="460.0" y="260.0" width="300.0" height="110.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="610.0" y="300.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="610.0" dy="0.0">Guardrailed Prompt</tspan>
+<tspan x="610.0" dy="17.5">LLM-Aufruf (OpenAI)</tspan>
+<tspan x="610.0" dy="17.5">Placeholder fuer DSGVO-Literals</tspan>
+</text>
+<line x1="610.0" y1="370.0" x2="230.0" y2="410.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="372.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">Draft + confirm_token (600 s)</tspan>
+</text>
+<rect x="80.0" y="410.0" width="300.0" height="90.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="230.0" y="450.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="230.0" dy="0.0">Preview mit Explain &amp; Warnungen</tspan>
+</text>
+<line x1="230.0" y1="500.0" x2="610.0" y2="540.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="502.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">Optional: POST /preview</tspan>
+</text>
+<rect x="460.0" y="540.0" width="300.0" height="110.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="610.0" y="580.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="610.0" dy="0.0">Validator (Ontologie, Prefixe)</tspan>
+<tspan x="610.0" dy="17.5">Explainability Summary</tspan>
+</text>
+<line x1="610.0" y1="650.0" x2="230.0" y2="690.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="652.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">Preview-Response</tspan>
+</text>
+<line x1="230.0" y1="730.0" x2="610.0" y2="770.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="732.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">POST /execute (Token)</tspan>
+</text>
+<rect x="460.0" y="770.0" width="300.0" height="110.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="610.0" y="810.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="610.0" dy="0.0">Token-Check &amp; TTL</tspan>
+<tspan x="610.0" dy="17.5">Placeholder-Rehydrierung</tspan>
+<tspan x="610.0" dy="17.5">Undo-Sparql erzeugen</tspan>
+</text>
+<line x1="610.0" y1="820.0" x2="990.0" y2="820.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="800.0" y="802.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="800.0" dy="0.0">SPARQL Update</tspan>
+</text>
+<rect x="840.0" y="760.0" width="300.0" height="120.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="990.0" y="800.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="990.0" dy="0.0">Fuseki Dataset `combined`</tspan>
+<tspan x="990.0" dy="17.5">Writes in `urn:nl2sparql:changes`</tspan>
+</text>
+<line x1="990.0" y1="740.0" x2="610.0" y2="700.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="800.0" y="702.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="800.0" dy="0.0">HTTP Response</tspan>
+</text>
+<rect x="460.0" y="660.0" width="300.0" height="90.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="610.0" y="700.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="610.0" dy="0.0">Pseudonymisiertes Logging</tspan>
+<tspan x="610.0" dy="17.5">JSONL + Undo Payload</tspan>
+</text>
+<rect x="80.0" y="580.0" width="300.0" height="80.0" rx="12.0" ry="12.0" fill="#ffffff" stroke="#2c5282" stroke-width="1.20" opacity="1.00" />
+<text x="230.0" y="620.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="230.0" dy="0.0">Undo aus History</tspan>
+</text>
+<line x1="230.0" y1="640.0" x2="610.0" y2="620.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="612.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">POST /undo</tspan>
+</text>
+<line x1="610.0" y1="640.0" x2="990.0" y2="600.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="800.0" y="602.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="800.0" dy="0.0">SPARQL Undo</tspan>
+</text>
+<line x1="990.0" y1="600.0" x2="610.0" y2="580.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="800.0" y="572.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="800.0" dy="0.0">Undo Ergebnis</tspan>
+</text>
+<line x1="610.0" y1="600.0" x2="230.0" y2="560.0" stroke="#1a365d" stroke-width="1.60" marker-end="url(#arrowhead)" />
+<text x="420.0" y="562.0" font-size="14" font-weight="normal" fill="#1a365d" text-anchor="middle" font-family="Inter, Arial, sans-serif">
+<tspan x="420.0" dy="0.0">Undo Bestaetigung</tspan>
+</text>
+</svg>
