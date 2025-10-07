@@ -19,6 +19,9 @@ Diese Arbeit konzipiert, implementiert und evaluiert eine Schnittstelle, die \em
 \item \emph{Protokollierung} mit Pseudonymisierung und klaren Lösch-/Aufbewahrungsregeln.
 \end{enumerate}
 
+\paragraph{Eigene Beiträge.}
+Gegenüber bestehenden NL{\textrightarrow}SPARQL-Ansätzen fokussiert diese Arbeit drei miteinander verzahnte Neuerungen: (i) ein Ontologie-only-Prompting, das personenbezogene Instanzdaten konsequent aus dem LLM-Kontext heraushält, (ii) ein zweistufiger Preview/Execute-Workflow mit bestätigungspflichtigem Token, Explainability und deterministischen Undo-Queries, sowie (iii) ein Logging-Konzept, das Pseudonymisierung und Privacy-by-Design-Metadaten (DPV) kombiniert. Die Architektur und Referenzimplementierung wurden vollständig vom Autor entwickelt und in eine produktionsnahe Entwicklungsumgebung der Pfarrerdatenbank überführt. In der Evaluation (Kapitel~\ref{sec:evaluation}) werden diese Bausteine gemeinsam betrachtet und gegenüber Anforderungen aus Datenschutz, Governance und Usability reflektiert.
+
 \paragraph{Forschungsfragen.}
 \begin{description}
 \item[RQ1:] Mit welcher Genauigkeit lassen sich natürliche \emph{Änderungsanweisungen} in \emph{syntaktisch valide} und \emph{semantisch korrekte} SPARQL-Operationen (INSERT/DELETE/UPDATE) überführen?
@@ -133,7 +136,7 @@ curl -G 'https://example.org/sparql' \
   --data-urlencode 'query=SELECT * WHERE { ?s ?p ?o } LIMIT 10'
 \end{lstlisting}
 
-\subsection{Validierung: SHACL (Teaser)}
+\subsection{Validierung: SHACL}
 
 \emph{SHACL} beschreibt \emph{Shapes} mit Constraints (z.\,B.\ \texttt{sh:minCount}, \texttt{sh:datatype}, \texttt{sh:class}, \texttt{sh:pattern}), gegen die Datengraphen validiert werden; das Ergebnis ist ein Validierungsbericht mit Fokusknoten, Pfad, Ursache und Schweregrad \cite{SHACL12}. In dieser Arbeit dient SHACL als Baustein für frühzeitige Qualitätskontrollen und Policy-Checks; Details folgen im Validierungs-Kapitel.
 
@@ -181,7 +184,7 @@ bereitgestellt. Zentrale Klassen/Properties, die auch in den Beispielen unten ve
 \subsection{Build‐/Publikationsprozess}
 Der Build-Schritt erfolgt skriptgestützt (\texttt{generate-combined.sh}). Die Dienste werden in \texttt{config.ttl} beschrieben: Neben getrennten Services für \emph{sachsen}, \emph{brandenburg}, \emph{kps} und \emph{vocabulary} ist ein virtueller Service \texttt{combined} definiert, der alle benannten Graphen als einen SPARQL-Endpunkt zusammenführt. Die Web-UI \texttt{pfarrerbuch-meta} (GitHub: \texttt{pcp-on-web/pfarrerbuch-meta}\footnote{Internes GitHub-Repository; der Zugriff auf \texttt{pcp-on-web/pfarrerbuch-meta} ist projektintern geregelt.}) fragt diesen Endpunkt und rendert die Daten in einer nutzerfreundlichen Oberfläche.
 
-\subsection{Datenmodell (Kurzfassung)}
+\subsection{Datenmodell}
 \textbf{Personen} (\texttt{pfb:Person}) tragen u.,a. \texttt{pfb:vorname} und \texttt{pfb:nachname}. \textbf{Lebensabschnitte}
 (\texttt{pfb:Lebensabschnitt}) hängen über \texttt{pfb:hatLebensabschnitt} an Personen und sind typisiert
 (z.,B. \texttt{pfb:Geburt}). Für Ereignisse stehen die zeitlichen Felder \texttt{pfb:jahr}/\texttt{pfb:datum} sowie Ortsbezüge
@@ -198,7 +201,7 @@ Der Build-Schritt erfolgt skriptgestützt (\texttt{generate-combined.sh}). Die D
 \noindent Die Abbildung zeigt die vier Bausteine: (1) regionale N-Triples und Vokabular, (2) Skriptbasierter Merge nach N-Quads
 (\texttt{meta-combined.nq.gz}) mit benannten Graphen, (3) SPARQL-Endpoint \emph{combined} aus \texttt{config.ttl}, (4) die Web-UI.
 
-\subsection{SPARQL-Beispiele (kompakt)}
+\subsection{SPARQL-Beispiele}
 \noindent Präfixe (für alle Beispiele):
 \begin{verbatim}
 PREFIX pfb: http://meta-pfarrerbuch.evangelische-archive.de/vocabulary#
@@ -258,9 +261,6 @@ OPTIONAL { ?la pfb:hatOrt ?ort }
 } LIMIT 50
 \end{verbatim}
 
-\subsection{Hinweise zur Nutzung und Qualität}
-Für explorative Analysen empfiehlt sich, Ergebnisse zunächst pro benanntem Graph zu betrachten, um regionale Modellierungsdetails zu erkennen. Provenienzangaben (\texttt{pfb:derivedFrom}) können für Nachprüfbarkeit herangezogen werden. Eine formale Datenprüfung via SHACL ist im gelieferten Material nicht enthalten; das Modell ist jedoch dafür ausgelegt (z.,B. Kardinalitäten für \texttt{pfb:vorname}/\texttt{pfb:nachname}, Typbeschränkungen für \texttt{pfb:jahr}/\texttt{xsd:integer} etc.) und kann bei Bedarf ergänzt werden.
-
 \subsection{Fazit}
 Die Pfarrerdatenbank stellt einen integrierten RDF-Wissensgraph über mehrere Regionen bereit. Das eigene Vokabular und die klare Trennung per benannten Graphen ermöglichen sowohl aggregierte Queries als auch präzise Regionalsichten. Über den kombinierten SPARQL-Endpunkt versorgt die Web-UI Forschende und die interessierte Öffentlichkeit mit konsistenten, zitierfähigen Daten.
 
@@ -278,7 +278,7 @@ Die Pfarrerdatenbank stellt einen integrierten RDF-Wissensgraph über mehrere Re
 Große Sprachmodelle (Large Language Models, LLMs) sind neuronale Netze, die auf umfangreichen Textkorpora mit einem Sprachmodellierungsziel vortrainiert werden und anschließend via Prompting, ggf.\ Feintuning und Ausrichtung (z.\,B.\ RLHF) eine breite Palette von Sprachaufgaben bearbeiten.\footnote{Ein einführender Überblick findet sich u.\,a.\ in \cite{campesatoLLMIntro}.} 
 Zentraler Treiber ist die \emph{Transformer}-Architektur \cite{vaswani2017attention} kombiniert mit (i) Skalierung, (ii) In-Context-Lernen \cite{brown2020language,wei2022chain}, (iii) \emph{Tool-Use} \cite{yao2023react} und (iv) Instruction Tuning/RLHF \cite{ouyang2022training}. Dieses Kapitel bündelt die Grundlagen und verknüpft sie mit Sicherheit, Datenschutz und Retrieval \cite{abadi2016deep,carlini2021extracting,lewis2020rag}.
 
-\subsection{Transformer‐Grundlagen (kurz)}
+\subsection{Transformer‐Grundlagen}
 Der Transformer ersetzt rekurrente/konvolutionale Netze durch \emph{Self-Attention}. Für Token-Repräsentationen $X$ werden \emph{Queries}, \emph{Keys}, \emph{Values} berechnet, und
 \[
 \mathrm{Attention}(Q,K,V)= \mathrm{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}}\right) V
@@ -294,7 +294,7 @@ GPT-3 \cite{brown2020language} demonstriert starke Zero-/Few-Shot-Leistung rein 
 \subsection{CoT und ReAct}
 \emph{Chain-of-Thought} (CoT) ergänzt Beispiele um Zwischenschritte und verbessert mehrschrittiges Denken; Gewinne sind v.\,a.\ bei größeren Modellen ausgeprägt \cite{wei2022chain}. \emph{ReAct} verknüpft Denken und Handeln (Search/Lookup), reduziert Halluzinationen und erhöht Nachvollziehbarkeit \cite{yao2023react}. Beide sind relevant, wenn natürlichsprachliche Anweisungen in SPARQL-Strukturen zu überführen sind.
 
-\subsection{Instruction Tuning und RLHF (kurz)}
+\subsection{Instruction Tuning und RLHF}
 Instruction Tuning (SFT), Präferenzlernen und RL (PPO mit KL-Regularisierung) führen zu von Menschen bevorzugten Antworten; teils übertreffen kleinere, ausgerichtete Modelle große, nicht-ausgerichtete Baselines \cite{ouyang2022training}. Bias/Halluzination bleiben offene Punkte.
 
 \subsection{Wissensintensive Aufgaben: RAG \& KG-QA}
@@ -306,7 +306,7 @@ LLMs sind „free-form“, viele Anwendungen verlangen \emph{strukturierte} Ausg
 \subsection{Sicherheit, Datenschutz und verantwortungsvolle Nutzung}
 Modelle können Trainingsfragmente (inkl.\ PII) memorisieren; Extraktion ist gezeigt \cite{carlini2021extracting}. Gegenmaßnahmen: Datenkurationshygiene, konservatives Dekodieren, Quellenbindung (RAG/Tool-Use) \cite{lewis2020rag,yao2023react}. \emph{Differential Privacy} (DP-SGD) begrenzt den Beitrag einzelner Beispiele formal, mit Genauigkeits-Trade-offs \cite{abadi2016deep}. In Deployments sind Logging-Policies, Datenminimierung und Transparenz zentral.
 
-\subsection{Evaluierung (kurz)}
+\subsection{Evaluierung}
 Perplexity ist nur Vorindikator. Aufgabenmetriken (EM/F1/ROUGE/Accuracy) und menschliche Präferenzbewertungen sind komplementär \cite{ouyang2022training}. Für CoT/Tool-Use sollten auch \emph{Rationale}/Trajektorien bewertet werden (Korrektheit, Konsistenz, Zitierbarkeit).
 
 \subsection{Grenzen und offene Herausforderungen}
@@ -316,30 +316,8 @@ Perplexity ist nur Vorindikator. Aufgabenmetriken (EM/F1/ROUGE/Accuracy) und men
   \item \textbf{Erklärbarkeit}: Rationale sind nützlich, aber keine „wahren“ Gründe; Audit statt Interpretation.
 \end{itemize}
 
-\subsection{Praxisbausteine (kompakt)}
-\subsubsection*{Prompting (Zero/Few-Shot)}
-\begin{verbatim}
-Rolle: Präziser Assistent.
-Aufgabe: Beantworte in 2-3 Sätzen mit Quelle.
-Format: Antwort + [Quelle: URL/Titel].
-Beispiel(e): ...
-Neue Frage: ...
-\end{verbatim}
-
-\subsubsection*{ReAct-Skelett}
-\begin{verbatim}
-Q: ...
-Thought: ...
-Action: Search/Lookup[...]
-Observation: ...
-Final Answer: ...
-\end{verbatim}
-
-\subsubsection*{Strukturierte Ausgabe (JSON/Schema)}
-\begin{verbatim}
-Gib ausschließlich validen JSON:
-{"answer":"<string>","evidence":[{"title":"...","url":"..."}]}
-\end{verbatim}
+\subsection{Praxisbausteine}
+Für die in dieser Arbeit entwickelte Pipeline genügt ein schlanker Satz von Prompt-Bausteinen: Zero-/Few-Shot-Templates binden Rollenbeschreibungen und Formatvorgaben ein, ReAct-artige Sequenzen ergänzen optional Suche und Tool-Aufrufe, und strikte Schemaangaben erzwingen strukturierte Ausgaben (JSON/SPARQL) \cite{liu2023survey,yao2023react,cong2023schema}. Entscheidend ist weniger das konkrete Prompt-Layout als die Verzahnung mit nachgelagerten Guardrails (Validator, Explainability, Undo), die in den folgenden Kapiteln ausgearbeitet werden.
 
 \subsection{Zusammenfassung}
 LLMs kombinieren Transformernetzwerke, skalengetriebenes Vortraining und In-Context-Lernen zu universellen Sprachwerkzeugen. \emph{CoT} verbessert mehrschrittiges Denken, \emph{ReAct} verankert Antworten in externer Evidenz, \emph{RAG} ist zentral für wissensintensive Szenarien. Für diese Arbeit sind strukturierte Ausgaben (SPARQL), Guardrails und Datenschutzmaßnahmen (u.\,a.\ DP) entscheidend \cite{vaswani2017attention,brown2020language,wei2022chain,yao2023react,ouyang2022training,lewis2020rag,holtzman2020curious,abadi2016deep,carlini2021extracting,dubey2019lcquad2,cong2023schema}.
@@ -356,9 +334,9 @@ LLMs kombinieren Transformernetzwerke, skalengetriebenes Vortraining und In-Cont
 \label{sec:prompting}
 
 \subsection{Von \emph{Pre-Train, Fine-Tune} zu \emph{Pre-Train, Prompt, Predict}}
-Das Paradigma hat sich von aufgabenspezifischem Training hin zu vortrainierten Sprachmodellen mit Aufgabenspezifikation über Prompts verschoben. Klassische Systeme optimieren $P(y\mid x;\theta)$; Prompting reformuliert Aufgaben so, dass ein LM via $P(x;\theta)$ mit geeigneter Texteingabe (\emph{Prompt}) die gewünschte Ausgabe erzeugt \cite{liu2023survey}. Vorteile: Nutzung großer Rohtexte, wenige bis keine Labels (zero-/few-shot) und schnelle Adaptierbarkeit über Prompt- statt Objektiv-Engineering \cite{liu2023survey}.
+In der aktuellen Entwicklung der Sprachverarbeitung hat sich das Paradigma von rein aufgaben\-spezifischer Supervision hin zu vortrainierten Sprachmodellen (LMs) mit Aufgabenspezifikation über Prompts verschoben. Während klassische Systeme die bedingte Wahrscheinlichkeit \(P(y \mid x;\theta)\) direkt durch überwachten Lernens optimieren, modellieren Prompting-Methoden die Textwahrscheinlichkeit \(P(x;\theta)\) und reformulieren Aufgaben so, dass ein LM mit geeigneter Texteingabe (\emph{Prompt}) die gewünschte Ausgabe produziert \cite{liu2023survey}. Dieses \emph{Pre-Train, Prompt, Predict}-Denken bietet drei zentrale Vorteile: (i) Nutzung großskaliger Rohtexte für das Vortraining, (ii) wenige bis keine gelabelten Daten (\emph{few-/zero-shot}) durch geschickte Aufgabenformulierung, (iii) schnelle Adaptierbarkeit über Prompt- statt Objektiv-Engineering \cite{liu2023survey}.
 
-\subsection{Bausteine des Promptings (kompakt)}
+\subsection{Bausteine des Promptings}
 \textbf{Template-Engineering:} Formen wie \emph{Prefix}-Prompts (autoregressiv), \emph{Cloze}-Prompts (maskiert) oder Vorlagen für Mehrfacheingaben; Design manuell oder automatisiert \cite{liu2023survey}.\\
 \textbf{Answer-Engineering:} Antwortraum gezielt einschränken (Labelwörter/Verbalizer vs.\ freie Generierung); auch hier manuell, heuristisch oder kontinuierlich optimiert \cite{liu2023survey}.\\
 \textbf{Kontext \& Multiprompts:} Prompt-Ensembling (Mehrheitsvotum/Distillation) und \emph{In-Context}-Demonstrationen (Auswahl/Reihenfolge/Retrieval) stabilisieren; Komposition/Dekomposition macht Aufgabenstruktur explizit \cite{liu2023survey}.
@@ -371,7 +349,7 @@ Ohne LM-Updates (\emph{tuning-frei}) ist Prompting effizient, aber prompt-sensit
 \textbf{Self-Consistency:} Statt einer CoT-Antwort mehrere Denkpfade sampeln und die konsistenteste Endlösung wählen; wenige Stichproben (5–10) genügen oft \cite{wang2022selfconsistency}.\\
 \textbf{Kontextuelle Kalibrierung:} Korrigiert Antworttendenzen (z.\,B.\ Reihenfolge-/Common-Token-Bias) durch Vorab-Schätzung auf inhaltsfreien Inputs; senkt Varianz ohne Zusatzdaten \cite{zhao2021calibrate}.
 
-\subsection{KGQA \& Text-zu-SPARQL (praxisnah)}
+\subsection{KGQA \& Text-zu-SPARQL}
 Für Wissensgraph-Fragen ist \emph{Text-zu-SPARQL} robuster als Freitext: NL $\rightarrow$ SPARQL, Ausführung liefert belastbare Ergebnisse. Effektiv sind (i) T-Box- und A-Box-Nutzung, (ii) gezielte \emph{Fragmentierung} des relevanten Graphausschnitts, (iii) Generierung mehrerer Query-Varianten mit Auswahl per Ausführungserfolg \cite{avila2024autokgqagpt}. Praktische Leitlinien: Präfixe/Namespaces sichern, optionale Properties als \texttt{OPTIONAL}, String-Filter konsistent (Regex, \texttt{i}-Flag) \cite{avila2024autokgqagpt}.
 
 \subsection{Von Prompt-Ketten zu Pipelines: DSPy}
@@ -402,7 +380,7 @@ Prompting verlagert den Schwerpunkt von datenintensiver Supervision zu geschickt
 \subsection{Motivation}
 RDF/RDFS/OWL definieren primär \emph{Struktur}. Für belastbare Datenprodukte braucht es zusätzlich (i) \textbf{Validierung} gegen modellierte Erwartungen, (ii) \textbf{Erklärbarkeit} (Provenienz \& Why-Not), (iii) \textbf{beherrschte OPTIONAL}-Nutzung. Wir kombinieren dafür: SPIN für modellnahe Validierung/Regeln \cite{spin-w3c}, schwach gut konzipiertes (wwd) SPARQL für sichere \texttt{OPTIONAL}s \cite{kaminski-kostylev-beyond-well-designed} und Provenienz-Halbringe als algebraisches Fundament \cite{green-provenance-semirings,herschel-why-why-not,herschel-survey}.
 
-\subsection{Validierung mit SPIN (kurz)}
+\subsection{Validierung mit SPIN}
 \textbf{SPIN} (\emph{SPARQL Inferencing Notation}) repräsentiert SPARQL als RDF und verknüpft Abfragen direkt mit Klassen:
 \begin{itemize}
   \item \texttt{spin:constraint} (ASK/CONSTRUCT): Bedingungen, die Instanzen erfüllen müssen.
@@ -427,7 +405,7 @@ ex:Square a rdfs:Class ;
 \paragraph{Praxisleitfaden.}
 (1) Prüfungen als \texttt{ASK} (schnell), Violations optional via \texttt{CONSTRUCT}. (2) Regeln/Constraints \emph{klassenlokal} und granular halten. (3) UPDATE-Regeln begrenzen (Iterationslimit/Reihenfolge), um Loops zu vermeiden.
 
-\subsection{Explainability: Provenienz \& Why-Not (kompakt)}
+\subsection{Explainability: Provenienz \& Why-Not}
 Mit \emph{K-Relationen} werden Tupel durch Elemente eines kommutativen Halbrings annotiert; die relationale Algebra (bzw.\ Datalog) hebt sich homomorph auf Annotationen \cite{green-provenance-semirings}. Ergebnis:
 \begin{itemize}
   \item \textbf{How-Provenienz}: Polynome kodieren, \emph{wie} Quellen kombiniert wurden.
@@ -445,7 +423,7 @@ Mit \emph{K-Relationen} werden Tupel durch Elemente eines kommutativen Halbrings
 \end{itemize}
 \textbf{Best Practices:} Links-assoziieren \((P_1\ \mathrm{OPT}\ P_2)\ \mathrm{OPT}\ P_3\) statt \(P_1\ \mathrm{OPT}\ (P_2\ \mathrm{OPT}\ P_3)\); tiefe \texttt{OPT}-Nester vermeiden; FILTER für rechte \texttt{OPT}-Variablen nur top-level.
 
-\subsection{Mini-Playbook (praxisnah)}
+\subsection{Mini-Playbook}
 \begin{enumerate}
   \item \textbf{Modellieren}: RDFS/OWL-Schema + SPIN-\texttt{constraint}s; optionale SPIN-\texttt{rule}s für Anreicherung.
   \item \textbf{Früh validieren}: Formulare/ETL mit \texttt{ASK}-Constraints; Violations als \texttt{ConstraintViolation} mit \texttt{spin:fix}.
@@ -455,9 +433,7 @@ Mit \emph{K-Relationen} werden Tupel durch Elemente eines kommutativen Halbrings
 \end{enumerate}
 
 \subsection{Grenzen und Ausblick}
-SPIN bringt Validierung \emph{ins Modell}, verlangt aber Disziplin (Terminierung/Updates). Wwd hält \texttt{OPTIONAL} praktikabel, OF/CPT kann jedoch wachsen. Provenienz skaliert fachlich, nicht beliebig speicherseitig; visuelle Summarisierung bleibt zentral \cite{herschel-survey}. Nächste Schritte: domänenspezifische SPIN-Bibliotheken, (halb-)automatische OF-Normalisierung, eingebettete Why-Not-Erklärungen in Triple Stores.
-
-
+SPIN bringt Validierung \emph{ins Modell}, verlangt aber Disziplin (Terminierung/Updates). Wwd hält \texttt{OPTIONAL} praktikabel, OF/CPT kann jedoch wachsen. Provenienz skaliert fachlich, nicht beliebig speicherseitig; visuelle Summarisierung bleibt zentral \cite{herschel-survey}. 
 
 
 
@@ -511,7 +487,7 @@ Schwächungen: $(\varepsilon,\delta)$-DP und \emph{probabilistic DP} (mit Wkt.\ 
 \textbf{Rate-Limit/Budget.} Pro Principal: Throttling, Captcha/Bot-Schutz, DP-Budget $\varepsilon$; Ablehnung hochsensitiver Anfragen. \\
 \textbf{Versionierung/Provenienz.} Veröffentlichungen dokumentieren ($\varepsilon,\delta,m,\tau,\tau'$), Datenbasis (Zeit/Scope), Qualität, Lizenz; persistente URIs für „neueste“ vs.\ datierte Version (Memento) \cite{W3CDWBP}.
 
-\subsection{Leitlinien \& Checkliste (kompakt)}
+\subsection{Leitlinien \& Checkliste}
 \begin{itemize}
   \item \textbf{Minimalprinzip:} so grob wie möglich, so fein wie nötig.
   \item \textbf{SPARQL-Fragment:} nur Aggregations-Untermenge mit begrenzter Sensitivität; Volltext nur auf Whitelist-Feldern.
@@ -541,32 +517,42 @@ DP für allgemeines SPARQL (OPTIONAL, Rekursion, CONSTRUCT) bleibt offen; robust
 \chapter{Verwandte Arbeiten}
 \label{sec:related-work}
 
-Dieses Kapitel ordnet unseren Beitrag entlang von fünf Strängen ein: (i) \emph{NL{\textrightarrow}SPARQL \& KGQA}, (ii) \emph{visuelle Query-Builder}, (iii) \emph{Anonymisierung \& Differential Privacy für RDF/SPARQL}, (iv) \emph{Zugriffskontrolle für RDF \& Linked Data}, und (v) \emph{Governance-Vokabulare (DPV)}. Über alle Stränge hinweg adressieren wir die Lücke zwischen nutzerfreundlicher Anfrageerstellung, formaler Datenschutzsicherung und durchsetzbarer Richtlinienprüfung vor der SPARQL-Ausführung.
+Dieses Kapitel ordnet unseren Beitrag entlang von fünf Strängen ein: (i) \emph{NL{\textrightarrow}SPARQL \& KGQA}, (ii) \emph{visuelle Query-Builder}, (iii) \emph{Anonymisierung \& Differential Privacy für RDF/SPARQL}, (iv) \emph{Zugriffskontrolle für RDF \& Linked Data}, und (v) \emph{Governance-Vokabulare (DPV)}. Quer dazu positionieren wir unsere \emph{Praxislösung} (Kap.~\ref{sec:implementierung}) mit Ontologie-only Prompting, Preview{\(\rightarrow\)}Execute-Guardrails, Undo, pseudonymisierten Logs und SHACL-/DPV-basierten Governance-Artefakten.
 
 \subsection{NL{\textrightarrow}SPARQL und Fragebeantwortung auf Wissensgraphen}
-Frühe neuronale Ansätze zur Übersetzung natürlicher Sprache in SPARQL (\emph{NL{\textrightarrow}SPARQL}) zeigen die prinzipielle Machbarkeit auf Sequenz-zu-Sequenz-Basis \cite{yin-nmt-sparql}. LC-QuAD~2.0 stellt ein groß skaliertes, komplexes Benchmark mit Wikidata/DBpedia-Alignment bereit und triggert robuste Generalisierung und Kompositionsfähigkeit \cite{lcquad2}. Zeitnahe Arbeiten koppeln LLMs mit KG-Awareness, Retrieval und Strukturinduktion \cite{avila-kgqa-llm,pramanik-uniqorn}. 
-Unser Beitrag nutzt diese Linie, geht aber über reine Query-Synthese hinaus: Wir \emph{materialisieren} jeden NL{\textrightarrow}SPARQL-Schritt als \texttt{dpv:Process} samt Zweck, Rechtsgrundlage, Datenkategorien und Maßnahmen (vgl.\ \S\ref{sec:privacy-governance}), prüfen ihn \emph{vor} Ausführung gegen SHACL-Policies und bieten Risiko-/DP-Previews.
+Frühe neuronale Arbeiten zu \emph{NL{\textrightarrow}SPARQL} zeigen die Machbarkeit von Sequenz-zu-Sequenz-Übersetzungen \cite{yin-nmt-sparql}. LC-QuAD~2.0 etabliert komplexe Benchmarks (Wikidata/DBpedia) und fordert Generalisierung/Komposition \cite{lcquad2}. Zeitnahe Ansätze koppeln LLMs mit KG-Awareness, Retrieval und Strukturinduktion \cite{avila-kgqa-llm,pramanik-uniqorn}.
+
+\textit{Bezug zu unserer Arbeit.} Während der Großteil der Literatur auf \textbf{SELECT/KGQA} zielt, setzt unser System explizit auf \textbf{Änderungsoperationen} (\texttt{INSERT}/\texttt{DELETE}/\texttt{DELETE/INSERT}) und bindet diese in einen \textbf{zweistufigen} Workflow ein (Preview mit Validation/Explain {\(\rightarrow\)} tokenpflichtige Execute-Phase) inkl.\ deterministischem \textbf{Undo} (Kap.~\ref{sec:konzeption}, \ref{sec:implementierung}). Anders als schema-agnostische Übersetzer geben wir dem LLM nur die \textbf{Ontologie (T-Box)} statt Instanzdaten (\emph{Privacy-by-Design}) und prüfen vor Ausführung \emph{ontologiekonforme} Tripel (Validator-Service, Explainability-Panel; Kap.~\ref{sec:evaluation}).
 
 \subsection{Visuelle SPARQL-Builder und Exploration}
-Die YASGUI-Familie etabliert de-facto-Werkzeuge für Editor, Endpoint-Interaktion und Shareability \cite{yasgui}. Domänenspezifische Builder wie \emph{RDF Explorer} \cite{vargas-rdf-explorer} und \emph{Wikidata Query Builder} senken Einstiegshürden; empirisch adressieren Kuric~et~al.\ Usability-Herausforderungen bei Laien \cite{kuric-usability}. Unser UI verbindet diese Stärken (Guided Patterns, Vorschau, Fehlerhinweise) mit \emph{Governance-Artefakten}: Einwilligungs-/Notice-Bezüge, Legal-Basis-Auswahl und Visualisierung der DPV-Maße neben dem Query-Plan.
+Die YASGUI-Familie ist De-facto-Standard für Editor/Endpoint-Interaktion/Shareability \cite{yasgui}. Domänenspezifische Builder wie \emph{RDF Explorer} \cite{vargas-rdf-explorer} oder der \emph{Wikidata Query Builder} senken Einstiegshürden; Kuric~et~al.\ diskutieren Usability-Herausforderungen bei Laien \cite{kuric-usability}.
+
+\textit{Bezug zu unserer Arbeit.} Unser UI kombiniert YASGUI-artige Editor-Erfahrung mit \textbf{Guided Patterns}, \textbf{Preview/Explain}, \textbf{Ablauf-Token} (Countdown) und \textbf{Undo}-Buttons sowie einem \textbf{Logs-Panel} (pseudonymisiert) und \textbf{PerfPanel} (p50/p95/max; Kap.~\ref{sec:implementierung}). Damit adressieren wir die in \cite{kuric-usability} beschriebenen Einstiegshürden durch unmittelbare Rückmeldungen (Validation/Explain) und sichere Ausführung (Token-Gate). Die Evaluation (Kap.~\ref{sec:evaluation}) zeigt, dass Nutzer:innen mit TODO-Hinweisen/Platzhaltern im Editor umgehen und Korrekturen zielgerichtet vornehmen.
 
 \subsection{Anonymisierung, Linkage-Robustheit und Differential Privacy}
-Im Linked-Data-Kontext sind formale Garantien schwieriger als in tabellarischen Setups: logikbasierte Sichtweisen beleuchten die Grenzen und Voraussetzungen von RDF-Anonymisierung \cite{logical-foundations-lda}. Gegen Linkage-Angriffe adressiert Delanaux~et~al.\ strukturierte Graph-Anonymisierung mit explizitem Fokus auf Wiederverknüpfung \cite{delanaux-linkage}. Für \emph{SPARQL} skizziert Buil-Aranda DP-Strategien (z.\,B.\ noisey Aggregates, Query-Budgete) \cite{builaranda-dp-sparql}. 
-Unsere Pipeline kombiniert (i) View-basierte Exporte, (ii) linkage-robuste Transformationen, und (iii) optionale DP-Previews, gesteuert durch DPV-\emph{Measures} und \emph{ProcessingConditions}.
+Formale Garantien sind im Linked-Data-Kontext schwieriger als in Tabellenmodellen: logikbasierte Arbeiten beschreiben Voraussetzungen/Grenzen von RDF-Anonymisierung \cite{logical-foundations-lda}; Delanaux~et~al.\ adressieren strukturbezogene Linkage-Robustheit \cite{delanaux-linkage}. Für SPARQL diskutiert Buil-Aranda DP-Strategien (z.\,B.\ \emph{noisy aggregates}, Budgete) \cite{builaranda-dp-sparql}.
+
+\textit{Bezug zu unserer Arbeit.} Produktiv setzen wir \textbf{deterministische Pseudonymisierung} für Logs ein (Namen/URIs {\(\rightarrow\)} Token), während die \textbf{LLM-Pipeline Ontologie-only} bleibt (keine A-Box im Prompt). \textbf{DP- und ZEALOUS-Mechanismen} werden als \emph{Erweiterungspunkte} architektonisch vorbereitet (Kap.~\ref{sec:privacy}, \ref{sec:privacy-governance}); die Betriebsleitlinien empfehlen ein \emph{restriktives Aggregations-Fragment} und Budgetierung. Damit positioniert sich unser System zwischen praktischer Einsetzbarkeit (Pseudonymisierung, Zugriffskontrolle) und forschungsnahen, optionalen DP-Modulen.
 
 \subsection{Zugriffskontrolle für RDF und Linked Data}
-Kirrane~et~al.\ bieten den umfassenden Überblick über Modelle (MAC, DAC, RBAC), neuere ABAC/CBAC-Paradigmen, sowie RDF-/Linked-Data-spezifische Durchsetzung \& Standardisierungen \cite{kirrane-ac-survey}. 
-\textbf{Modellebenen.} Neben klassischen Modellen werden View-basierte Kontrollen (VBAC) für Tripel/Graphen/Ansichten diskutiert sowie Delegation/Widerruf in DAC-Setups \cite{kirrane-ac-survey}.  
-\textbf{Sprachen \& Standards.} ABAC via \emph{XACML} inkl.\ OWL-gestützter Ableitung \cite{kirrane-ac-survey}; WebID/WAC für AuthN/AuthZ im Web; ODRL zur Lizenz-/Policy-Formulierung; PPO/Policy-Engines (z.\,B.\ SHI3LD) mit SPARQL ASK/Rewrite. 
-\textbf{Durchsetzungsstrategien.} (i) Datenfilter/temporäre Graphen; (ii) Abfrageumschreibung (BGP-Rewrites, benannte Graphen, FILTER/!BOUND); (iii) Policy-Propagation über RDFS/Hierarchien; (iv) Konfliktlösung (Prioritäten, Meta-Policies) \cite{kirrane-ac-survey}. 
-Unsere Architektur setzt auf \emph{ABAC+VBAC hybrid}: Attribute (Akteur, Kontext, Jurisdiktion) \emph{und} Ansichten (benannte Graphen) steuern eine SHACL-gestützte Pre-Enforcement-Prüfung; Konflikte werden deklarativ (Meta-Policies, „deny-overrides“) gelöst und als erklärbare Hinweise zurückgegeben.
+Kirrane~et~al.\ systematisieren Modelle (MAC, DAC, RBAC), moderne ABAC/CBAC-Varianten und RDF/LD-spezifische Durchsetzung \& Standards \cite{kirrane-ac-survey}. Diskutiert werden View-basierte Kontrollen (VBAC), Delegation/Widerruf, XACML/ODRL, WebID/WAC und Policy-Engines (z.\,B.\ SHI3LD) mit ASK/Rewrites \cite{kirrane-ac-survey}.
+
+\textit{Bezug zu unserer Arbeit.} Wir trennen \textbf{Produktionsgraphen} von einem \textbf{Changes-Graph} (<\texttt{urn:nl2sparql:changes}>) für Undo/Revisionen und erzwingen \textbf{Pre-Enforcement} durch Validation/Explain + Token (Kap.~\ref{sec:implementierung}). Das Backend implementiert \textbf{AuthN} (API-Key) und \textbf{Rate-Limits}; ABAC/VBAC-Policies und \textbf{SHACL-Prechecks} sind im Design verankert (Meta-Policies, \emph{deny-overrides}) und auf Fuseki/Jena-Mechanismen (ACLs, Jena Permissions) abbildbar (Kap.~\ref{sec:privacy-governance}). Damit schlagen wir eine Brücke zwischen Literaturmodellen und einer leichtgewichtigen, praktischen Durchsetzung in Editier-Workflows.
 
 \subsection{Governance mit dem Data Privacy Vocabulary (DPV)}
-DPV (W3C DPVCG) bietet ein SKOS/RDFS-basiertes Vokabular zur maschinenlesbaren Beschreibung von Zwecken, Rechtsgrundlagen, Rollen, Datenkategorien, Bedingungen, Maßnahmen und Rechten; v2.0 erweitert den Scope auf \emph{Daten und Technologien} und liefert Erweiterungen (PD, LOC, RISK, TECH, AI, LEGAL) \cite{dpv2024w3c}. 
-Wir nutzen \texttt{dpv:Process} als Aggregat für jede NL{\textrightarrow}SPARQL-Operation, verknüpfen \texttt{hasPurpose}, \texttt{has(LegalBasis|PersonalData|Processing)}, \texttt{has(Technical|Organisational)Measure} und prüfen diese mit SHACL vor Ausführung (\emph{Consent present? Sensitive PD{\textrightarrow}Measure? Cross-border{\textrightarrow}Law?}).
+DPV (W3C DPVCG) beschreibt Zwecke, Rechtsgrundlagen, Rollen, Datenkategorien, Bedingungen, Maßnahmen und Rechte; v2.0 erweitert dies um TECH/AI/LEGAL-Erweiterungen \cite{dpv2024w3c}.
+
+\textit{Bezug zu unserer Arbeit.} Jede NL{\(\rightarrow\)}SPARQL-Operation wird als \textbf{Governance-Akte} gedacht: Wir modellieren sie (konzeptionell) als \texttt{dpv:Process} mit \texttt{hasPurpose}, \texttt{has(LegalBasis|PersonalData|Processing)} und \texttt{has(Technical|Organisational)Measure} und prüfen diese via \textbf{SHACL-Prechecks} \emph{vor} Ausführung (Kap.~\ref{sec:konzeption}, \ref{sec:privacy-governance}). In der UI werden Governance-Artefakte (z.\,B.\ Zweck/Legal-Basis-Auswahl) als \emph{Guided Patterns} sichtbar; unser Logger verknüpft Explain/Undo mit pseudonymisierten Inhalten (Kap.~\ref{sec:implementierung}).
 
 \paragraph{Einordnung unseres Beitrags.}
-(1) \emph{Von Query-Synthese zu Governance-Akte:} NL{\textrightarrow}SPARQL wird als DPV-\texttt{Process} materialisiert; (2) \emph{Policy-First Execution:} SHACL-Prechecks mit ABAC/VBAC-Constraints \emph{vor} Endpoint-Ausführung; (3) \emph{Privacy-by-Design:} linkage-robuste Views \& DP-Previews als Maßnahmen; (4) \emph{Erklärbarkeit:} Hinweise zu Zweck, Rechtsgrundlage, Maßnahmen, Konfliktlösung; (5) \emph{Usability:} Guided UI (YASGUI-Erbe) mit Governance-Artefakten.
+\begin{enumerate}
+  \item \textbf{Von Query-Synthese zu \emph{sicherer} Datenänderung:} Über reine SELECT/KGQA hinaus generieren wir \texttt{INSERT}/\texttt{DELETE}/\texttt{UPDATE} und erzwingen einen Preview{\(\rightarrow\)}Execute-Flow mit Token und Undo.
+  \item \textbf{Privacy-by-Design:} Ontologie-only Prompting, pseudonymisierte Logs, Changes-Graph und (optionale) DP/ZEALOUS-Erweiterungen.
+  \item \textbf{Policy-First:} SHACL-gestützte Pre-Enforcement-Prüfungen und DPV-Integration in den Prozessfluss statt reiner „Best-Effort“-Ausführung.
+  \item \textbf{Usability \& Monitoring:} Guided Editor, Explainability, Undo, sowie Metriken (p50/p95/max) für Endpunkt- und LLM-Latenzen.
+\end{enumerate}
+In Summe positioniert sich unsere Arbeit zwischen den Linien NL{\(\rightarrow\)}SPARQL/KGQA, Policy/Access-Control und Privacy-Mechanismen als \emph{praktikable} Brücke: ein LLM-gestützter, revisionssicherer Editor für RDF-Änderungen mit Governance-„First“-Prinzip.
+
 
 
 
@@ -649,11 +635,29 @@ Die Anwendung operiert auf RDF/OWL. Änderungen werden konsequent im dedizierten
   \item \textbf{Erklärung}: Strukturierte Zusammenfassung (Operationstyp, betroffene Prädikate, TTL) für das `ExplainPanel`.
 \end{enumerate}
 
+\begin{figure}[ht]
+  \centering
+  \includesvg[width=\linewidth]{fig_workflow}
+  \caption{Generate→Preview→Execute-Workflow mit vorgeschaltetem Ontologie-Prompting und nachgelagertem Undo.}
+  \label{fig:workflow}
+\end{figure}
+
+Abbildung~\ref{fig:workflow} fasst den zweistufigen Guardrail-Flow zusammen und verdeutlicht die Verbindung zwischen LLM, Validator, Explainability und den menschlichen Bestätigungsschritten.
+
 \subsection{Zweistufige Ausführung}
 Preview-Endpunkt generiert \texttt{confirm\_token} + TTL; UI zeigt Countdown und deaktiviert Execute bei Ablauf oder Editor-Änderung. Execute validiert Token, führt Query aus, schreibt Logs und liefert Undo-Query zurück.
 
 \subsection{Protokollierung und Undo}
 Vor jedem Update wird ein Logeintrag vorbereitet; bei Erfolg werden Status und Undo-Query aktualisiert (`LoggerService`). Undo ruft inverse SPARQL-Queries auf und dokumentiert Ergebnis und Token.
+
+\begin{figure}[ht]
+  \centering
+  \includesvg[width=\linewidth]{fig_logging_sequence}
+  \caption{Sequenzdiagramm für Preview, Execute und Undo mit Token-Prüfung, Pseudonymisierung und Logging.}
+  \label{fig:logging-sequence}
+\end{figure}
+
+Abbildung~\ref{fig:logging-sequence} veranschaulicht den Nachrichtenfluss zwischen UI, Backend, Fuseki und Logdatei und zeigt, an welchen Stellen Sicherheitsmaßnahmen (Token, Pseudonymisierung) greifen.
 
 \subsection{Performance-Metriken}
 `MonitoringService` sammelt und aggregiert Latenzen nach Endpunkt und liefert sie per REST (\texttt{/metrics/perf}) sowie im Prometheus-Format (\texttt{/metrics/prometheus}). Die UI zeigt sie als Kacheln mit wählbarem Zeitfenster.
@@ -666,6 +670,15 @@ Vor jedem Update wird ein Logeintrag vorbereitet; bei Erfolg werden Status und U
   \item \textbf{Triple-Store (Apache Jena Fuseki)}: persistente Datensätze; Access via HTTP (SPARQL 1.1).
   \item \textbf{Optionale Monitoring-Stack} (Prometheus/Grafana) laut \texttt{infra/monitoring/}.
 \end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \includesvg[width=0.92\linewidth]{fig_architecture}
+  \caption{Systemarchitektur der Referenzimplementierung mit Frontend, Backend-Services, Fuseki und Monitoring.}
+  \label{fig:architecture}
+\end{figure}
+
+Die Abbildung macht deutlich, wie Preview/Execute-Flow, Token-Speicher und Pseudonymisierungsschicht ineinandergreifen und welche Schnittstellen für externe Erweiterungen (z.\,B.\ weitere Ontologien) vorgesehen sind.
 
 \paragraph{API-Auszug.}
 \begin{itemize}
@@ -849,6 +862,15 @@ Die in \path{app/backend/services/metrics.py} und \path{app/backend/services/mon
   \item Die häufigsten Endpunkte sind \texttt{/nl2sparql/generate} und \texttt{/nl2sparql/select}, was das typische Nutzungsmuster widerspiegelt.
 \end{itemize}
 
+\begin{figure}[ht]
+  \centering
+  \includesvg[width=0.9\linewidth]{fig_evaluation}
+  \caption{Verdichtete Leistungskennzahlen (HTTP/Fuseki) auf Basis des 15-Minuten-Snapshots und der Vergleichsläufe ohne LLM.}
+  \label{fig:evaluation-metrics}
+\end{figure}
+
+Abbildung~\ref{fig:evaluation-metrics} illustriert die Aufteilung der Latenzen zwischen LLM-Aufrufen und Fuseki-Operationen sowie die Wirkung des Guardrail-Flows auf Undo- und Preview-Pfade.
+
 Ein kontrollierter Durchlauf ohne LLM (nur Preview/Execute/Undo) reduziert die HTTP-Latenz deutlich (\texttt{evaluation/perf\_after.json:1}, \texttt{evaluation/perf\_after\_undo.json:1}); die Fuseki-Werte bleiben nahezu identisch. Damit bestätigt sich, dass das Backend als dünner Proxy zur Ontologie agiert und Fuseki der dominante Faktor für Datenzugriffe ist.
 
 \section{Datenschutz und Logging (RQ2)}
@@ -887,6 +909,12 @@ Mangels Zugriff auf die Archivpraxis während der Entwicklungsphase wurde ein fo
 
 Die Ergebnisse reichen für eine qualitative Einschätzung, ersetzen jedoch keine summative Nutzerstudie in der Zielgruppe der Archivierenden. Kapitel~\ref{sec:fazit} adressiert dies als zukünftige Arbeit.
 
+\section{Diskussion und Limitationen}
+
+Die Evaluation setzt den Schwerpunkt auf Systemsicht und funktionale Korrektheit. Verwandte Arbeiten wie Avila~et~al.\ \cite{avila-kgqa-llm} und Kuric~et~al.\ \cite{kuric-usability} verknüpfen NL{\textrightarrow}SPARQL-Interfaces zusätzlich mit quantitativen Nutzerstudien (Task-Zeit, Fehlerklassifikation) oder Baseline-Vergleichen zu klassischen Query-Buildern. Ein solcher Direktvergleich war aufgrund eingeschränkter Testzugänge nicht realisierbar und bleibt zukünftigen Arbeiten vorbehalten. Ebenso beschränkt sich die Messung auf eine lokale Compose-Umgebung; Echtbetrieb in der Pfarrerdatenbank oder cloudbasierte Fuseki-Cluster können zusätzliche Latenzen und Governance-Anforderungen aufdecken. Schließlich decken die fünf Prompts typische Änderungsfälle ab, erheben aber keinen Anspruch auf statistische Repräsentativität oder vollständige Abdeckung aller DSL-Varianten.
+
+Trotz dieser Grenzen zeigt die Evaluation das Zusammenspiel der Eigenbeiträge: Ontologie-only Prompting verhindert in allen Läufen die Exponierung personenbezogener Instanzdaten, das Token-gesteuerte Preview/Execute-Verfahren hielt unbeaufsichtigte Ausführungen zurück, und der Pseudonymizer verursachte keinen messbaren Overhead. Für eine belastbare Einordnung in produktiven Kontexten sollten künftige Arbeiten kontrollierte Nutzerstudien, Regressionstests gegen manuelle SPARQL-Workflows sowie formalisierte Privacy-Audits (z.\,B.\ strenge DP-Budgets) ergänzen.
+
 \section{Zusammenfassung}
 
 RQ1: Die LLM-Pipeline erzeugt syntaktisch valide, ontologie-konforme SPARQL-Queries; der Mensch bleibt eingebunden, um Platzhalter zu finalisieren. Preview, Execute und Undo arbeiten deterministisch und protokolliert.
@@ -913,6 +941,7 @@ Zur Reproduzierbarkeit steht die Referenzimplementierung samt Infrastruktur-Setu
   \item \textbf{Datenschutz und Logging:} Pseudonymisierte Logs sowie tokenbasierte Authentifizierung erfüllen die Anforderungen aus Kapitel~\ref{sec:privacy}. Messungen belegen, dass die Maskierung keinen nennenswerten Overhead erzeugt.
   \item \textbf{Usability und Monitoring:} Die React-UI begleitet den Prozess mit klaren Statusanzeigen und einem PerfPanel. Erste formative Tests deuten darauf hin, dass der Generate→Preview→Execute-Flow auch für Nicht-Entwickler:innen verständlich ist.
 \end{itemize}
+Damit leistet die Arbeit einen integrierten Beitrag, der NL{\textrightarrow}SPARQL-Generierung, Explainability und Datenschutz nicht isoliert betrachtet, sondern als abgestimmte Gesamtlösung für die Pfarrerdatenbank realisiert.
 
 \section{Praxistauglichkeit für die Pfarrerdatenbank}
 Die Referenzimplementierung arbeitet direkt gegen die Pfarrerdatenbank und berücksichtigt deren Vokabular und Graphstruktur (Kapitel~\ref{sec:Pfarrerdatenbank}). Damit ist die Lösung nicht nur ein Technologiedemonstrator, sondern ein konkretes Werkzeug für Archiv- und Editionspraxis. Besonders wichtig ist dabei die klare Trennung zwischen Changes-Graph (Undo) und Produktionsgraphen: Änderungen bleiben nachvollziehbar, ohne den Bestand irreversibel zu beeinflussen. Auch das Monitoring erlaubt es, Lastspitzen schnell zu erkennen – ein Aspekt, der für den produktiven Betrieb mit mehreren Redakteur:innen entscheidend ist.
@@ -922,8 +951,8 @@ Trotz der positiven Ergebnisse bleiben einige Punkte offen:
 \begin{itemize}
   \item \textbf{Platzhalter und Kontextwissen:} LLMs geben bewusst TODO-Kommentare aus. Für die Endanwender:innen entsteht dadurch ein zusätzlicher Schritt, Werte manuell zu ergänzen. Eine UI-Unterstützung (z.\,B. Warnhinweise oder Formular-Widgets) könnte diese Lücke schließen.
   \item \textbf{Komplexe Änderungslogik:} Abhängigkeiten über mehrere Ressourcen hinweg (z.\,B. Konsistenzprüfungen über mehrere Graphen) erfordern nach wie vor domänenspezifische Skripte oder SPIN/SHACL-Regeln.
-  \item \textbf{Nutzerstudien:} Die Evaluation stützt sich auf Technik-affine Pilotnutzer:innen. Um belastbare Aussagen zur Usability zu treffen, wären summative Studien mit archivischen Fachanwender:innen sinnvoll.
   \item \textbf{Sicherheits-Hardening:} Der Fokus lag auf Authentifizierung und Rate-Limits. Für einen öffentlichen Rollout wären weitere Maßnahmen denkbar, etwa Attribute-Based Access Control pro Named Graph oder Differential Privacy für aggregierte SELECT-Antworten.
+  \item \textbf{Privacy-Garantien:} Die eingesetzten Pseudonymisierungs- und Log-Maskierungsverfahren liefern praktische Datenschutzgewinne, ersetzen aber keine formale Differential-Privacy-Garantie. Für sensible Analysen wären Budget-basierte Mechanismen oder SPARQL-spezifische DP-Frameworks zu ergänzen.
 \end{itemize}
 
 \section{Ausblick}
