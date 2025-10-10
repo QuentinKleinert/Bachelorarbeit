@@ -42,6 +42,12 @@ und (iv) eine \emph{Evaluation} auf einer domänennahen Wissensbasis.
 
 Kapitel~\ref{sec:theorie} fasst zunächst die theoretischen Grundlagen zusammen, darunter RDF, OWL, SPARQL, Large Language Models sowie zentrale Aspekte des Datenschutzes. Anschließend gibt Kapitel~\ref{sec:related-work} einen Überblick über verwandte Arbeiten. Die Anforderungsanalyse und Konzeption der Schnittstelle werden in Kapitel~\ref{sec:konzeption} erläutert, gefolgt von der konkreten Implementierung in Kapitel~\ref{sec:implementierung}. Kapitel~\ref{sec:evaluation} beschreibt die Evaluation der entwickelten Lösung. Abschließend zieht Kapitel~\ref{sec:fazit} ein Fazit und gibt einen Ausblick auf mögliche Weiterentwicklungen.
 
+\paragraph{Codeverfügbarkeit.}
+Der vollständige Quellcode und die Artefakte dieser Arbeit sind als eingefrorenes Release
+(Tag \textbf{Final\_release}, Commit \textbf{62d012f}) archiviert und über Zenodo dauerhaft
+zitierbar (\href{https://doi.org/10.5281/zenodo.17309179}{DOI: 10.5281/zenodo.17309179}).
+
+
 
 
 
@@ -1003,7 +1009,7 @@ Die Anwendung arbeitet auf RDF/OWL. Änderungen werden im dedizierten Named Grap
 \section{Konzeptionelle Lösung}
 
 \subsection{Verarbeitungspipeline NL\texorpdfstring{$\rightarrow$}{→}SPARQL}
-Abbildung~\ref{fig_workflow} zeigt die Pipeline Generate→Preview→Execute→Undo:
+Die Pipeline Generate→Preview→Execute→Undo:
 \begin{enumerate}
   \item \textbf{Intent-Analyse:} \texttt{generate\_sparql\_with\_guardrails()} erkennt Operationen, Arbeitsgraph und Placeholders.
   \item \textbf{Schema-Guidance:} Ontologieinfos werden eingebettet; disallow-Listen verhindern Graph-Management-Befehle.
@@ -1039,7 +1045,7 @@ Preview erzeugt \texttt{confirm\_token} + TTL und persistiert die Anfrage-ID. Di
 Undo ruft inverse SPARQL-Updates auf, dokumentiert den Ausgang und wendet Pseudonyme konsistent an. Fehlerfälle werden mit \texttt{status=undo\_failed} protokolliert, wodurch Audits nachvollziehbar bleiben.
 
 \subsection{Performance-Metriken}
-Der Monitoring-Stack erfasst Latenzen für HTTP-Endpoints und Fuseki (\texttt{select}, \texttt{update}) als Histogramme (p50/p95/max, Anzahl). \texttt{/api/metrics/perf} liefert aggregierte Werte im JSON-Format für die UI, \texttt{/api/metrics/prometheus} stellt Rohwerte für Prometheus/Grafana bereit.
+Der Monitoring-Stack erfasst Latenzen für HTTP-Endpoints und Fuseki (\texttt{select}, \texttt{update}) als Histogramme (p50/p95/max, Anzahl). \texttt{/api/metrics/perf} liefert aggregierte Werte im JSON-Format für die UI.
 
 \section{Systemarchitektur}
 \label{subsec:arch-backend}
@@ -1050,11 +1056,11 @@ Der Monitoring-Stack erfasst Latenzen für HTTP-Endpoints und Fuseki (\texttt{se
   \item \textbf{Monitoring-Stack (optional):} Prometheus/Grafana gemäß \texttt{infra/monitoring/}.
 \end{itemize}
 
-\begin{figure}[ht]
-  \centering
-  \includesvg[width=0.92\linewidth]{fig_architecture}
-  \caption{Systemarchitektur mit Guardrails, Pseudonymisierung und Monitoring.}
-  \label{fig:architecture}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{Abbildungen/NL2SPARQL_Systemarchitektur_clean_v3.png}
+\caption{Die Systemarchitektur}
+\label{fig:Systemarchitektur}
 \end{figure}
 
 \paragraph{API-Auszug.}
@@ -1141,9 +1147,18 @@ Die in Kapitel~\ref{sec:konzeption} abgeleiteten Anforderungen (F1–F8) wurden 
 Die Anwendung besteht aus drei Schichten:
 \begin{itemize}
   \item \textbf{Backend (FastAPI).} \texttt{app/backend/main.py} lädt Konfigurationen (\texttt{config.py}), initialisiert Ontologie-Cache und Rate-Limiter und registriert Router für NL2SPARQL, Logs, Metrics, Ontology und Beispielabfragen (\texttt{kps}).
-  \item \textbf{Frontend (React, Tailwind, Vite).} \texttt{ui/src/App.tsx} orchestriert NL-Eingabe, SPARQL-Editor, Preview/Explain, Token-Countdown, Log-Timeline, Undo und Performance-Dashboard.
+  \item \textbf{Frontend (React, Tailwind, Vite).} \texttt{ui/src/App.tsx} koordiniert NL-Eingabe, SPARQL-Editor, Preview/Explain, Token-Countdown, Log-Timeline, Undo und Performance-Dashboard.
   \item \textbf{Triple-Store (Apache Jena Fuseki).} Persistente Daten der Pfarrerdatenbank; alle Updates landen im Named Graph \texttt{<urn:nl2sparql:changes>}, sodass Undo und Audits klar abgrenzbar bleiben. Optional ergänzt ein Prometheus/Grafana-Stack die Observability.
 \end{itemize}
+
+\subsection{Code- und Artefaktverfügbarkeit}
+Der Quellcode der Referenzimplementierung (\texttt{NL2SPARQL}) ist als GitHub-Release
+\emph{Final\_release} (Commit \texttt{62d012f}) eingefroren. Ein dauerhaft referenzierbarer
+Snapshot ist auf Zenodo hinterlegt \cite{kleinert_nl2sparql_zenodo}:
+\href{https://doi.org/10.5281/zenodo.17309179}{DOI: 10.5281/zenodo.17309179}.
+Das Release enthält zusätzlich die automatisch erzeugten Source-Archive (ZIP/TAR) des
+Abgabestands. Reproduktionshinweise (Docker, Startbefehle) sind in der README beschrieben.
+
 
 \section{Backend-Implementierung}
 
@@ -1151,7 +1166,7 @@ Die Anwendung besteht aus drei Schichten:
 \texttt{app/backend/config.py} liest benötigte Parameter (\texttt{FUSEKI\_*}, \texttt{OPENAI\_*}, \texttt{LLM\_*}, \texttt{API\_AUTH\_*}, \texttt{RATE\_LIMIT\_*}) per \texttt{pydantic-settings}. Bei \texttt{startup} werden Ontologie-Caches (\texttt{validator.refresh\_allowed\_cache()}) aufgebaut, der Rate-Limiter konfiguriert (\texttt{refresh\_rate\_limiter()}) und Prometheus-Metriken aktiviert. API-Aufrufe sind durch Header \texttt{x-api-key} oder Bearer-Token geschützte; \texttt{RateLimiter} (Sliding Window + Burst) begrenzt Traffic auf 120 req/min plus 30-er Burst.
 
 \subsection{LLM-gestützte Query-Synthese}
-\texttt{generate\_sparql\_with\_guardrails()} (Listing~\ref{lst:llm-guardrail}) orchestriert Ontologie-Only-Prompting:
+\texttt{generate\_sparql\_with\_guardrails()} (Listing~\ref{lst:llm-guardrail}) steuert den Prozess des Ontologie-Only-Prompting:
 \begin{enumerate}
   \item \texttt{\_fetch\_terms()} liest Klassen/Properties aus Fuseki (limitierbar, um Token-Budget zu kontrollieren).
   \item \texttt{anonymize\_text()} ersetzt Zitate, Namen, Jahreszahlen durch Platzhalter (\texttt{PH1}, \texttt{PH\_YEAR}).
@@ -1310,12 +1325,6 @@ Der Pseudonymizer ersetzt Literalwerte und interne URIs deterministisch. Die Log
 \paragraph{Leistungsoverhead.}
 Ein 15-Minuten-Snapshot zeigt: HTTP-\(p_{50}=2{,}64\,\mathrm{s}\), \(p_{95}=5{,}13\,\mathrm{s}\) (dominiert durch LLM-Latenz), Fuseki-\texttt{SELECT} \(p_{50}=47{,}9\,\mathrm{ms}\), \(p_{95}=180{,}0\,\mathrm{ms}\); \texttt{UPDATE} \(p_{50}=82{,}7\,\mathrm{ms}\), \(p_{95}=87{,}1\,\mathrm{ms}\). Das Aktivieren/Deaktivieren der Pseudonymisierung bewirkt keinen messbaren Unterschied bei Fuseki-Operationen und $<2\,\%$ Abweichung im HTTP-\(p_{50}\). Damit ist der Datenschutzmechanismus praktisch ohne Performanceeinbußen nutzbar.
 
-\begin{figure}[ht]
-\centering
-\includesvg[width=0.9\linewidth]{fig_evaluation}
-\caption{Verdichtete Leistungskennzahlen (HTTP/Fuseki) aus dem 15-Minuten-Snapshot; ein separater Lauf ohne LLM verdeutlicht den Anteil der Modelllatenz.}
-\label{fig:evaluation-metrics}
-\end{figure}
 
 \section{Ergebnisse zu RQ3: Benutzbarkeit \& Erklärbarkeit (heuristisch)}
 \label{sec:ergebnisse-rq3}
